@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Testing | tirdadc]]></title>
+  <link href="http://tirdadc.github.io/blog/categories/testing/atom.xml" rel="self"/>
+  <link href="http://tirdadc.github.io/"/>
+  <updated>2014-09-22T22:40:34-04:00</updated>
+  <id>http://tirdadc.github.io/</id>
+  <author>
+    <name><![CDATA[tirdadc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Nested Feature Tests With Capybara and RSpec]]></title>
+    <link href="http://tirdadc.github.io/blog/2014/09/11/nested-feature-tests-with-capybara-and-rspec/"/>
+    <updated>2014-09-11T15:46:00-04:00</updated>
+    <id>http://tirdadc.github.io/blog/2014/09/11/nested-feature-tests-with-capybara-and-rspec</id>
+    <content type="html"><![CDATA[<p>I recently wrote some automated user acceptance tests with <a href="https://github.com/jnicklas/capybara">Capybara</a> for a multi-step wizard, and the initial approach didn&rsquo;t seem very DRY. I was rehashing the steps involved in previous scenarios to reach whatever step was currently being tested, and I was combining multiple expectations at various steps:</p>
+
+<pre><code class="ruby">feature 'User creates a thing' do
+  Capybara.javascript_driver = :poltergeist
+  WebMock.disable_net_connect!(:allow_localhost =&gt; true)
+
+  background do
+    user_login
+  end
+
+  scenario 'Step 0: User signs in' do
+    expect(page).to have_content('Signed in successfully.')
+  end
+
+    scenario 'Step 1: selects A, continues, reaches Step 2', :js =&gt; true do
+    visit('/wizard/type')
+    expect(page).to have_content('Step 1')
+    find('.type-a').click
+    find('.continue').click
+    expect(page).to have_content('Step 2')
+    end
+
+    scenario 'Step 2: picks name, continues, reaches Step 3', :js =&gt; true do
+    visit('/wizard/type')
+    find('.type-a').click
+    find('.continue').click
+    expect(page).to have_content('Step 2')
+
+    fill_in 'name', with: 'Funeralopolis'
+    find('.continue').click
+    expect(page).to have_content('Step 3')
+    end
+end
+</code></pre>
+
+<p><br>
+Thankfully you can <a href="https://github.com/jnicklas/capybara/commit/61524b0fd32a1fb55b82853bdc4a0293e9fcdef0">nest features since the 2.2.1 version</a>, which allows you to better separate the tests and setups while sequentially continuing from whatever state the previous test left you in:
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">feature</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="no">User</span> <span class="n">creates</span> <span class="n">a</span> <span class="n">thing</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="no">Capybara</span><span class="o">.</span><span class="n">javascript_driver</span> <span class="o">=</span> <span class="ss">:poltergeist</span>
+</span><span class='line'>  <span class="no">WebMock</span><span class="o">.</span><span class="n">disable_net_connect!</span><span class="p">(</span><span class="ss">:allow_localhost</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  background do</span>
+</span><span class='line'><span class="sr">    user_login</span>
+</span><span class='line'><span class="sr">  end&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="n">scenario</span> <span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="no">Step</span> <span class="mi">0</span><span class="p">:</span> <span class="no">User</span> <span class="n">signs</span> <span class="k">in</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">have_content</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lsquo</span><span class="p">;</span><span class="no">Signed</span> <span class="k">in</span> <span class="n">successfully</span><span class="o">.</span><span class="n">&amp;rsquo</span><span class="p">;)</span>
+</span><span class='line'>  <span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  feature &amp;lsquo;Step 1: Type&amp;rsquo;, :js =&gt; true do</span>
+</span><span class='line'><span class="sr">    background do</span>
+</span><span class='line'><span class="sr">      visit(&amp;lsquo;/</span><span class="n">wizard</span><span class="o">/</span><span class="n">type</span><span class="o">&amp;</span><span class="n">rsquo</span><span class="p">;)</span>
+</span><span class='line'>    <span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;scenario &#39;it is on Step 1&#39; do</span>
+</span><span class='line'><span class="sr">  expect(page).to have_content(&#39;Step 1&#39;)</span>
+</span><span class='line'><span class="sr">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">feature &#39;it selects A, continues, reaches Step 2&#39; do</span>
+</span><span class='line'><span class="sr">  background do</span>
+</span><span class='line'><span class="sr">    find(&#39;.type-a&#39;).click</span>
+</span><span class='line'><span class="sr">    find(&#39;.continue&#39;).click</span>
+</span><span class='line'><span class="sr">  end</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">  scenario &#39;it reaches Step 2&#39; do</span>
+</span><span class='line'><span class="sr">    expect(page).to have_content(&#39;Step 2&#39;)</span>
+</span><span class='line'><span class="sr">  end</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">  feature &#39;Step 2: Name&#39;, :js =&amp;gt; true do</span>
+</span><span class='line'><span class="sr">    background do</span>
+</span><span class='line'><span class="sr">      fill_in &#39;name&#39;, with: &#39;Funeralopolis&#39;</span>
+</span><span class='line'><span class="sr">      find(&#39;.continue&#39;).click</span>
+</span><span class='line'><span class="sr">    end</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">    scenario &#39;it reaches Step 3&#39; do</span>
+</span><span class='line'><span class="sr">      expect(page).to have_content(&#39;Step 3&#39;)</span>
+</span><span class='line'><span class="sr">    end</span>
+</span><span class='line'><span class="sr">  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="sr">&lt;p&gt;  end</span>
+</span><span class='line'><span class="sr">end</span>
+</span></code></pre></td></tr></table></div></figure></p>
+]]></content>
+  </entry>
+  
+</feed>
