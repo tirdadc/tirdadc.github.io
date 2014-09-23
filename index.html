@@ -105,25 +105,27 @@ created Rails 4.1 project.</p>
 </ol>
 
 
-<pre><code class="`` ruby">  # development.rb
-  config.active_record.migration_error = :page_load
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># development.rb</span>
+</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">active_record</span><span class="o">.</span><span class="n">migration_error</span> <span class="o">=</span> <span class="ss">:page_load</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># production.rb</span>
+</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">active_record</span><span class="o">.</span><span class="n">dump_schema_after_migration</span> <span class="o">=</span> <span class="kp">false</span>
+</span></code></pre></td></tr></table></div></figure>
 
-  # production.rb
-  config.active_record.dump_schema_after_migration = false
-</code></pre>
 
-<ol>
-<li>Change this in your <code>application.rb</code>:</li>
-</ol>
-
+<p><span>6.</span> Change this in your <code>application.rb</code>:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rails/all&#39;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><br>
-to:</p>
+<p>to:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
