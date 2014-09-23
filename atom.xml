@@ -4,7 +4,7 @@
   <title><![CDATA[tirdadc]]></title>
   <link href="http://tirdadc.github.io/atom.xml" rel="self"/>
   <link href="http://tirdadc.github.io/"/>
-  <updated>2014-09-22T22:42:04-04:00</updated>
+  <updated>2014-09-23T17:09:08-04:00</updated>
   <id>http://tirdadc.github.io/</id>
   <author>
     <name><![CDATA[tirdadc]]></name>
@@ -22,28 +22,44 @@
 little kabuki dance you need to perform to get <a href="http://mongoid.org">Mongoid</a> to play nice with a freshly
 created Rails 4.1 project.</p>
 
-<ul>
+<ol>
 <li><p>Add mongoid to your Gemfile:<br>
 <code>gem &lsquo;mongoid&rsquo;, &lsquo;~> 4.0.0&rsquo;</code></p></li>
-<li><p>Generate your mongoid.yml configuration file:<br>
+<li><p>Generate your <code>mongoid.yml</code> configuration file:<br>
 <code>rails g mongoid:config</code></p></li>
 <li><p>Remove the sqlite gem now from your Gemfile:<br>
 <code>gem &lsquo;sqlite3&rsquo;</code></p></li>
-<li><p>Delete database.yml</p></li>
+<li><p>Delete <code>database.yml</code></p></li>
 <li><p>Remove any lines that reference active_record from your environment files:</p></li>
-</ul>
+</ol>
 
+
+<pre><code class="`` ruby">  # development.rb
+  config.active_record.migration_error = :page_load
+
+  # production.rb
+  config.active_record.dump_schema_after_migration = false
+</code></pre>
+
+<ol>
+<li>Change this in your <code>application.rb</code>:</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rails/all&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><br>
+to:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># development.rb</span>
-</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">active_record</span><span class="o">.</span><span class="n">migration_error</span> <span class="o">=</span> <span class="ss">:page_load</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1"># production.rb</span>
-</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">active_record</span><span class="o">.</span><span class="n">dump_schema_after_migration</span> <span class="o">=</span> <span class="kp">false</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s2">&quot;action_controller/railtie&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;action_mailer/railtie&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;sprockets/railtie&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 ]]></content>
