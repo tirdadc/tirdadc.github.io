@@ -4,7 +4,7 @@
   <title><![CDATA[tirdadc]]></title>
   <link href="http://tirdadc.github.io/atom.xml" rel="self"/>
   <link href="http://tirdadc.github.io/"/>
-  <updated>2015-03-07T09:56:47-05:00</updated>
+  <updated>2015-03-07T10:06:00-05:00</updated>
   <id>http://tirdadc.github.io/</id>
   <author>
     <name><![CDATA[tirdadc]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Upgrading Ruby With Rbenv and RVM]]></title>
+    <title type="html"><![CDATA[Upgrading to Ruby 2.2.1 With Rbenv and RVM]]></title>
     <link href="http://tirdadc.github.io/blog/2015/03/06/upgrading-to-ruby-2-dot-2-1-with-rbenv-and-rvm/"/>
     <updated>2015-03-06T18:14:36-05:00</updated>
     <id>http://tirdadc.github.io/blog/2015/03/06/upgrading-to-ruby-2-dot-2-1-with-rbenv-and-rvm</id>
