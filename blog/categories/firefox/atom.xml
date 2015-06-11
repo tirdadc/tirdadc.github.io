@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Firefox | tirdadc]]></title>
+  <link href="http://tirdadc.github.io/blog/categories/firefox/atom.xml" rel="self"/>
+  <link href="http://tirdadc.github.io/"/>
+  <updated>2015-06-11T09:14:31-04:00</updated>
+  <id>http://tirdadc.github.io/</id>
+  <author>
+    <name><![CDATA[tirdadc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[React.js: Firefox Issue With onBlur]]></title>
+    <link href="http://tirdadc.github.io/blog/2015/06/11/react-dot-js-firefox-issue-with-onblur/"/>
+    <updated>2015-06-11T07:38:30-04:00</updated>
+    <id>http://tirdadc.github.io/blog/2015/06/11/react-dot-js-firefox-issue-with-onblur</id>
+    <content type="html"><![CDATA[<p>This started as a simple enough component to build in <a href="https://facebook.github.io/react/">React.js</a>: a text block that becomes an editable input when you click on it and reverts to text on the blur event.</p>
+
+<pre><code class="javascript">var InputField = React.createClass({
+  getInitialState: function() {
+    return {
+      value:  this.props.value,
+      active: false
+    }
+  },
+
+  updateValue: function(e) {
+    e.preventDefault();
+    this.setState({
+      value: e.target.value
+    });
+  },
+
+  handleClick: function(e) {
+    this.setState({
+      active: true
+    });
+  },
+
+  onBlur: function(e) {
+    this.setState({
+      active: false
+    });
+  },
+
+  render: function() {
+    if (this.state.active) {
+      return (
+        &lt;input
+          type='text'
+          value={this.state.value}
+          onChange={this.updateValue}
+          autoFocus={true}
+          onBlur={this.onBlur} /&gt;;
+    }
+    else {
+      return (
+        &lt;div&gt;
+          &lt;span onClick={this.handleClick}&gt;{this.state.value}&lt;/span&gt;
+        &lt;/div&gt;
+      )
+    }
+  }
+})
+
+React.render(&lt;InputField value="click me to edit me" /&gt;, document.getElementById('container'));
+</code></pre>
+
+<p>This works perfectly fine in Chrome and Safari, but due to some <a href="https://www.google.com/search?q=firefox+onblur+bug">potential bug</a>, Firefox triggers the onBlur on the initial click on the text, reverting the active flag to false and preventing the input from ever being rendered.</p>
+
+<p>This can be fixed by adding this to onBlur:</p>
+
+<pre><code class="javascript">onBlur: function(e) {
+  // Firefox issue
+  if (e.nativeEvent.explicitOriginalTarget &amp;&amp;
+      e.nativeEvent.explicitOriginalTarget == e.nativeEvent.originalTarget) {
+    return;
+  }
+  this.setState({
+    active: false
+  });
+}
+</code></pre>
+
+<p>JSFiddle: <a href="http://jsfiddle.net/gmk316qd/1/">http://jsfiddle.net/gmk316qd/1/</a></p>
+]]></content>
+  </entry>
+  
+</feed>
