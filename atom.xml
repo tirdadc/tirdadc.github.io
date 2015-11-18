@@ -1,94 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>tirdadc</title>
-  <meta name="author" content="tirdadc">
-
-  
-  <meta name="description" content="I recently upgraded my Sidekiq version to 4.0.0, which required upgrading my rather ancient version of Redis on my production environment. I had &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="http://tirdadc.github.io">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="tirdadc" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
-
-  
-
-</head>
-
-<body   >
-  <header role="banner"><hgroup>
-  <h1><a href="/">tirdadc</a></h1>
-  
-    <h2>Web Development | Ruby on Rails | Fougasse.js</h2>
-  
-</hgroup>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="https://www.google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:tirdadc.github.io" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div class="blog-index">
-  
-  
-  
-    <article>
-      
-  <header>
+  <title><![CDATA[tirdadc]]></title>
+  <link href="http://tirdadc.github.io/atom.xml" rel="self"/>
+  <link href="http://tirdadc.github.io/"/>
+  <updated>2015-11-18T11:33:17-05:00</updated>
+  <id>http://tirdadc.github.io/</id>
+  <author>
+    <name><![CDATA[tirdadc]]></name>
     
-      <h1 class="entry-title"><a href="/blog/2015/11/18/redis-monit-sidekiq-for-rails/">Redis, Monit and Sidekiq 4 for Rails</a></h1>
-    
-    
-      <p class="meta">
-        
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
-
-
-
-<time class='entry-date' datetime='2015-11-18T09:05:48-05:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:05 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I recently upgraded my <a href="https://github.com/mperham/sidekiq">Sidekiq</a> version to 4.0.0, which required upgrading my rather ancient version of Redis on my production environment. I had already set up Monit, but I&rsquo;ll cover the steps to get that up and running too.</p>
+  
+  <entry>
+    <title type="html"><![CDATA[Redis, Monit and Sidekiq 4 for Rails]]></title>
+    <link href="http://tirdadc.github.io/blog/2015/11/18/redis-monit-sidekiq-for-rails/"/>
+    <updated>2015-11-18T09:05:48-05:00</updated>
+    <id>http://tirdadc.github.io/blog/2015/11/18/redis-monit-sidekiq-for-rails</id>
+    <content type="html"><![CDATA[<p>I recently upgraded my <a href="https://github.com/mperham/sidekiq">Sidekiq</a> version to 4.0.0, which required upgrading my rather ancient version of Redis on my production environment. I had already set up Monit, but I&rsquo;ll cover the steps to get that up and running too.</p>
 
 <h1>Monit</h1>
 
@@ -159,35 +89,15 @@
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo monit status</span></code></pre></td></tr></table></div></figure>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/06/11/react-dot-js-firefox-issue-with-onblur/">React.js: Firefox Issue With onBlur</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-06-11T07:38:30-04:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:38 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This started as a simple enough component to build in <a href="https://facebook.github.io/react/">React.js</a>: a text block that becomes an editable input when you click on it and reverts to text on the blur event.</p>
+  <entry>
+    <title type="html"><![CDATA[React.js: Firefox Issue With onBlur]]></title>
+    <link href="http://tirdadc.github.io/blog/2015/06/11/react-dot-js-firefox-issue-with-onblur/"/>
+    <updated>2015-06-11T07:38:30-04:00</updated>
+    <id>http://tirdadc.github.io/blog/2015/06/11/react-dot-js-firefox-issue-with-onblur</id>
+    <content type="html"><![CDATA[<p>This started as a simple enough component to build in <a href="https://facebook.github.io/react/">React.js</a>: a text block that becomes an editable input when you click on it and reverts to text on the blur event.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -316,35 +226,15 @@
 
 
 <p>JSFiddle: <a href="http://jsfiddle.net/gmk316qd/1/">http://jsfiddle.net/gmk316qd/1/</a></p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/03/06/upgrading-to-ruby-2-dot-2-1-with-rbenv-and-rvm/">Upgrading to Ruby 2.2.1 With Rbenv and RVM</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-06T18:14:36-05:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>6:14 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Another one of those brief utilitarian blog posts for myself.</p>
+  <entry>
+    <title type="html"><![CDATA[Upgrading to Ruby 2.2.1 With Rbenv and RVM]]></title>
+    <link href="http://tirdadc.github.io/blog/2015/03/06/upgrading-to-ruby-2-dot-2-1-with-rbenv-and-rvm/"/>
+    <updated>2015-03-06T18:14:36-05:00</updated>
+    <id>http://tirdadc.github.io/blog/2015/03/06/upgrading-to-ruby-2-dot-2-1-with-rbenv-and-rvm</id>
+    <content type="html"><![CDATA[<p>Another one of those brief utilitarian blog posts for myself.</p>
 
 <p>rbenv:</p>
 
@@ -385,35 +275,15 @@
 
 <p>and you then have to restart Apache:
 <code>sudo apache2ctl graceful</code></p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/09/22/mongo-mongoid-and-rails-4.1/">Mongo, Mongoid and Rails 4.1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-22T22:41:22-04:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>10:41 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I typically forget to set the <code>&ndash;skip-active-record</code> when creating a new app, so this is the
+  <entry>
+    <title type="html"><![CDATA[Mongo, Mongoid and Rails 4.1]]></title>
+    <link href="http://tirdadc.github.io/blog/2014/09/22/mongo-mongoid-and-rails-4.1/"/>
+    <updated>2014-09-22T22:41:22-04:00</updated>
+    <id>http://tirdadc.github.io/blog/2014/09/22/mongo-mongoid-and-rails-4.1</id>
+    <content type="html"><![CDATA[<p>I typically forget to set the <code>&ndash;skip-active-record</code> when creating a new app, so this is the
 little kabuki dance you need to perform to get <a href="http://mongoid.org">Mongoid</a> to play nice with a freshly
 created Rails 4.1 project.</p>
 
@@ -459,35 +329,15 @@ created Rails 4.1 project.</p>
 </span><span class='line'><span class="nb">require</span> <span class="s2">&quot;sprockets/railtie&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/09/17/updating-your-ubuntu-packages/">Updating Your Ubuntu Packages</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-17T15:04:37-04:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:04 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><code>sudo apt-get update</code><br>
+  <entry>
+    <title type="html"><![CDATA[Updating Your Ubuntu Packages]]></title>
+    <link href="http://tirdadc.github.io/blog/2014/09/17/updating-your-ubuntu-packages/"/>
+    <updated>2014-09-17T15:04:37-04:00</updated>
+    <id>http://tirdadc.github.io/blog/2014/09/17/updating-your-ubuntu-packages</id>
+    <content type="html"><![CDATA[<p><code>sudo apt-get update</code><br>
 Update source list.</p>
 
 <p><code>sudo apt-get upgrade</code><br>
@@ -497,35 +347,15 @@ Upgrade all installed packages.</p>
 Remove unused .deb files for packages that are no longer installed.</p>
 
 <p><a href="https://help.ubuntu.com/community/AptGet/Howto">Source</a></p>
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/09/11/nested-feature-tests-with-capybara-and-rspec/">Nested Feature Tests With Capybara and RSpec</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-11T15:46:00-04:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:46 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I recently wrote some automated user acceptance tests with <a href="https://github.com/jnicklas/capybara">Capybara</a> for a multi-step wizard, and the initial approach didn&rsquo;t seem very DRY. I was rehashing the steps involved in previous scenarios to reach whatever step was currently being tested, and I was combining multiple expectations at various steps:</p>
+  <entry>
+    <title type="html"><![CDATA[Nested Feature Tests With Capybara and RSpec]]></title>
+    <link href="http://tirdadc.github.io/blog/2014/09/11/nested-feature-tests-with-capybara-and-rspec/"/>
+    <updated>2014-09-11T15:46:00-04:00</updated>
+    <id>http://tirdadc.github.io/blog/2014/09/11/nested-feature-tests-with-capybara-and-rspec</id>
+    <content type="html"><![CDATA[<p>I recently wrote some automated user acceptance tests with <a href="https://github.com/jnicklas/capybara">Capybara</a> for a multi-step wizard, and the initial approach didn&rsquo;t seem very DRY. I was rehashing the steps involved in previous scenarios to reach whatever step was currently being tested, and I was combining multiple expectations at various steps:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -687,84 +517,7 @@ Thankfully you can <a href="https://github.com/jnicklas/capybara/commit/61524b0f
 
 
 
-</div>
+]]></content>
+  </entry>
   
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2015/11/18/redis-monit-sidekiq-for-rails/">Redis, Monit and Sidekiq 4 for Rails</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/06/11/react-dot-js-firefox-issue-with-onblur/">React.js: Firefox Issue With onBlur</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/06/upgrading-to-ruby-2-dot-2-1-with-rbenv-and-rvm/">Upgrading to Ruby 2.2.1 With Rbenv and RVM</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/22/mongo-mongoid-and-rails-4.1/">Mongo, Mongoid and Rails 4.1</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/17/updating-your-ubuntu-packages/">Updating Your Ubuntu Packages</a>
-      </li>
-    
-  </ul>
-</section>
-
-
-
-
-
-  
-</aside>
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - tirdadc -
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
-</p>
-
-</footer>
-  
-
-
-
-
-
-
-
-  <script type="text/javascript">
-    (function(){
-      var twitterWidgets = document.createElement('script');
-      twitterWidgets.type = 'text/javascript';
-      twitterWidgets.async = true;
-      twitterWidgets.src = '//platform.twitter.com/widgets.js';
-      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
-    })();
-  </script>
-
-
-
-
-
-</body>
-</html>
+</feed>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Monit | tirdadc]]></title>
+  <link href="http://tirdadc.github.io/blog/categories/monit/atom.xml" rel="self"/>
+  <link href="http://tirdadc.github.io/"/>
+  <updated>2015-11-18T11:33:17-05:00</updated>
+  <id>http://tirdadc.github.io/</id>
+  <author>
+    <name><![CDATA[tirdadc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Redis, Monit and Sidekiq 4 for Rails]]></title>
+    <link href="http://tirdadc.github.io/blog/2015/11/18/redis-monit-sidekiq-for-rails/"/>
+    <updated>2015-11-18T09:05:48-05:00</updated>
+    <id>http://tirdadc.github.io/blog/2015/11/18/redis-monit-sidekiq-for-rails</id>
+    <content type="html"><![CDATA[<p>I recently upgraded my <a href="https://github.com/mperham/sidekiq">Sidekiq</a> version to 4.0.0, which required upgrading my rather ancient version of Redis on my production environment. I had already set up Monit, but I&rsquo;ll cover the steps to get that up and running too.</p>
+
+<h1>Monit</h1>
+
+<p><a href="https://mmonit.com/monit/">Monit</a> is a small Open Source utility for managing and monitoring Unix systems. We&rsquo;re going to use it to insure that Redis is always running, and restarted if the process goes down or the server gets rebooted.</p>
+
+<h2>Install Monit</h2>
+
+<p><code>$ sudo apt-get install monit</code></p>
+
+<h2>Configure Monit</h2>
+
+<p>Your main monit configuration file will be in <code>/etc/monit/monitrc</code>, and you&rsquo;re going to add a <code>redis.conf</code> file under <code>/etc/monit/conf.d/</code>.</p>
+
+<pre><code># /etc/monit/conf.d/redis.conf
+check process redis-server with pidfile "/var/run/redis/redis-server.pid"
+  start program = "/usr/local/bin/redis-server /etc/redis/redis.conf"
+  stop program = "/usr/local/bin/redis-cli shutdown"
+  if failed host 127.0.0.1 port 6379 then restart
+  if 5 restarts within 5 cycles then timeout
+</code></pre>
+
+<h1>Redis 3.0.5</h1>
+
+<p><a href="http://redis.io/topics/quickstart">Installing Redis</a> is pretty simple but you need to build it on Ubuntu to get the latest version:</p>
+
+<pre><code>$ wget http://download.redis.io/releases/redis-3.0.5.tar.gz
+$ tar xzf redis-3.0.5.tar.gz
+$ cd redis-3.0.5
+$ make
+</code></pre>
+
+<p>you can also run <code>make test</code> to verify that everything checks out.</p>
+
+<p>Once that is done, copy the files to <code>/usr/local/bin</code> and make sure you copy the new redis.conf to its appropriate location:</p>
+
+<pre><code>$ sudo cp src/redis-server /usr/local/bin/
+$ sudo cp src/redis-cli /usr/local/bin/
+$ sudo cp redis.conf /etc/redis/redis.conf
+</code></pre>
+
+<p>redis-cli is the command line tool, redis-server is what we&rsquo;ll be starting with Monit.</p>
+
+<h1>Tying them together</h1>
+
+<p>You want monit to reload the configuration changes and to restart the redis-server:</p>
+
+<pre><code>$ sudo monit reload
+$ sudo monit restart redis-server
+</code></pre>
+
+<p>You can see the output of the monit log at <code>/var/log/monit.log</code> to make sure everything is OK, or you can also use:</p>
+
+<pre><code>$ sudo monit status
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

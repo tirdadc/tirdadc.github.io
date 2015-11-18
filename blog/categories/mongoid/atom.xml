@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Mongoid | tirdadc]]></title>
+  <link href="http://tirdadc.github.io/blog/categories/mongoid/atom.xml" rel="self"/>
+  <link href="http://tirdadc.github.io/"/>
+  <updated>2015-11-18T11:33:17-05:00</updated>
+  <id>http://tirdadc.github.io/</id>
+  <author>
+    <name><![CDATA[tirdadc]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Mongo, Mongoid and Rails 4.1]]></title>
+    <link href="http://tirdadc.github.io/blog/2014/09/22/mongo-mongoid-and-rails-4.1/"/>
+    <updated>2014-09-22T22:41:22-04:00</updated>
+    <id>http://tirdadc.github.io/blog/2014/09/22/mongo-mongoid-and-rails-4.1</id>
+    <content type="html"><![CDATA[<p>I typically forget to set the <code>&ndash;skip-active-record</code> when creating a new app, so this is the
+little kabuki dance you need to perform to get <a href="http://mongoid.org">Mongoid</a> to play nice with a freshly
+created Rails 4.1 project.</p>
+
+<ol>
+<li><p>Add mongoid to your Gemfile:<br>
+<code>gem &lsquo;mongoid&rsquo;, &lsquo;~> 4.0.0&rsquo;</code></p></li>
+<li><p>Generate your <code>mongoid.yml</code> configuration file:<br>
+<code>rails g mongoid:config</code></p></li>
+<li><p>Remove the sqlite gem now from your Gemfile:<br>
+<code>gem &lsquo;sqlite3&rsquo;</code></p></li>
+<li><p>Delete <code>database.yml</code></p></li>
+<li><p>Remove any lines that reference active_record from your environment files:</p></li>
+</ol>
+
+
+<pre><code class="ruby"># development.rb
+config.active_record.migration_error = :page_load
+
+# production.rb
+config.active_record.dump_schema_after_migration = false
+</code></pre>
+
+<p><span>6.</span> Change this in your <code>application.rb</code>:</p>
+
+<pre><code class="ruby">require 'rails/all'
+</code></pre>
+
+<p>to:
+<code>ruby
+require "action_controller/railtie"
+require "action_mailer/railtie"
+require "sprockets/railtie"
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>
