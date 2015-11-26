@@ -4,7 +4,7 @@
   <title><![CDATA[tirdadc]]></title>
   <link href="http://tirdadc.github.io/atom.xml" rel="self"/>
   <link href="http://tirdadc.github.io/"/>
-  <updated>2015-11-25T19:15:51-05:00</updated>
+  <updated>2015-11-25T19:27:22-05:00</updated>
   <id>http://tirdadc.github.io/</id>
   <author>
     <name><![CDATA[tirdadc]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[DRYing Up Your Specs With Shared Examples and Shared Contexts]]></title>
+    <title type="html"><![CDATA[DRYing Up Your Rspecs With Shared Examples and Shared Contexts]]></title>
     <link href="http://tirdadc.github.io/blog/2015/11/25/drying-up-your-rspecs-with-shared-examples-and-shared-contexts/"/>
     <updated>2015-11-25T18:35:22-05:00</updated>
     <id>http://tirdadc.github.io/blog/2015/11/25/drying-up-your-rspecs-with-shared-examples-and-shared-contexts</id>
@@ -338,6 +338,8 @@
 
 
 <p>You&rsquo;re now down from 61 lines to 40, and it just looks less copy-paste happy. You can also move out your shared contexts to separate files and reuse them in different specs. The only immediate downside is that the line numbering is a bit less informative with shared examples compared to distinct specs.</p>
+
+<p>Like anything DRY-related, use this responsibly and don&rsquo;t create a nightmare bizarro world of obfuscated tests.</p>
 ]]></content>
   </entry>
   
