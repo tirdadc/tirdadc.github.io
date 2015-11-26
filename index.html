@@ -9,7 +9,7 @@
   <meta name="author" content="tirdadc">
 
   
-  <meta name="description" content="I recently upgraded my Sidekiq version to 4.0.0, which required upgrading my rather ancient version of Redis on my production environment. I had &hellip;">
+  <meta name="description" content="This is an example of how to use shared contexts and shared examples to refactor your specs. We have a Merchant model and a User model. We want to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,354 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/11/25/drying-up-your-rspecs-with-shared-examples-and-shared-contexts/">DRYing Up Your Specs With Shared Examples and Shared Contexts</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-11-25T18:35:22-05:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>6:35 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is an example of how to use <a href="https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context">shared contexts</a> and <a href="https://www.relishapp.com/rspec/rspec-core/v/3-4/docs/example-groups/shared-examples">shared examples</a> to refactor your <a href="http://rspec.info/">specs</a>.</p>
+
+<p>We have a Merchant model and a User model. We want to test 3 instance methods on Merchant that:</p>
+
+<ul>
+<li>change the merchant&rsquo;s state</li>
+<li>fire off an associated email</li>
+</ul>
+
+
+<p>Let&rsquo;s take the most naive approach and write 3 individual tests for these methods:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">describe</span> <span class="s1">&#39;#block&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant</span><span class="p">:</span> <span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;sets the merchant state to blocked&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">block</span>
+</span><span class='line'>    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="o">.</span><span class="n">blocked?</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;send an email notification&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">expect</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">merchant</span><span class="o">.</span><span class="n">block</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s1">&#39;#unblock&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant</span><span class="p">:</span> <span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="c1"># only a blocked user can be unblocked</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">block</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;sets the merchant state to active&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">unblock</span>
+</span><span class='line'>    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="o">.</span><span class="n">active?</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;send an email notification&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">expect</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">merchant</span><span class="o">.</span><span class="n">unblock</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s1">&#39;#deactivate&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant</span><span class="p">:</span> <span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;sets the merchant state to deactivated&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">deactivate</span>
+</span><span class='line'>    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="o">.</span><span class="n">deactivated?</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;send an email notification&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">expect</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">merchant</span><span class="o">.</span><span class="n">deactivate</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You&rsquo;re testing the same things on all 3 methods, so you can leverage shared examples to rewrite that in a way where you don&rsquo;t repeat that. You also want to pass both the action to trigger and the new state to test as parameters to your shared example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">shared_examples_for</span> <span class="s1">&#39;a merchant state change&#39;</span> <span class="k">do</span> <span class="o">|</span><span class="n">action</span><span class="p">,</span> <span class="n">new_state</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;sets the merchant state to </span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">to</span> <span class="n">be</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;sends an email notification&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">expect</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">merchant</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s1">&#39;#block&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant</span><span class="p">:</span> <span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it_behaves_like</span> <span class="s1">&#39;a merchant state change&#39;</span><span class="p">,</span> <span class="s1">&#39;block&#39;</span><span class="p">,</span> <span class="s1">&#39;blocked&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s1">&#39;#unblock&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant</span><span class="p">:</span> <span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">block</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it_behaves_like</span> <span class="s1">&#39;a merchant state change&#39;</span><span class="p">,</span> <span class="s1">&#39;unblock&#39;</span><span class="p">,</span> <span class="s1">&#39;active&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s1">&#39;#deactivate&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant</span><span class="p">:</span> <span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it_behaves_like</span> <span class="s1">&#39;a merchant state change&#39;</span><span class="p">,</span> <span class="s1">&#39;deactivate&#39;</span><span class="p">,</span> <span class="s1">&#39;deactivated&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now that you&rsquo;ve done that, you want to avoid repeating the setup portion for these tests. You can do that with <a href="https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context">shared contexts</a>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">shared_examples_for</span> <span class="s1">&#39;a merchant state change&#39;</span> <span class="k">do</span> <span class="o">|</span><span class="n">action</span><span class="p">,</span> <span class="n">new_state</span><span class="o">|</span>
+</span><span class='line'>  <span class="n">it</span> <span class="s2">&quot;sets the merchant state to </span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">to</span> <span class="n">be</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;sends an email notification&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">expect</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">merchant</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">}</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="o">.</span><span class="n">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">shared_context</span> <span class="s1">&#39;has a merchant and a billing manager&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant</span><span class="p">:</span> <span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s1">&#39;#block&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">include_context</span> <span class="s1">&#39;has a merchant and a billing manager&#39;</span>
+</span><span class='line'>  <span class="n">it_behaves_like</span> <span class="s1">&#39;a merchant state change&#39;</span><span class="p">,</span> <span class="s1">&#39;block&#39;</span><span class="p">,</span> <span class="s1">&#39;blocked&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s1">&#39;#unblock&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">include_context</span> <span class="s1">&#39;has a merchant and a billing manager&#39;</span>
+</span><span class='line'>  <span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">merchant</span><span class="o">.</span><span class="n">block</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it_behaves_like</span> <span class="s1">&#39;a merchant state change&#39;</span><span class="p">,</span> <span class="s1">&#39;unblock&#39;</span><span class="p">,</span> <span class="s1">&#39;active&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s1">&#39;#deactivate&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">include_context</span> <span class="s1">&#39;has a merchant and a billing manager&#39;</span>
+</span><span class='line'>  <span class="n">it_behaves_like</span> <span class="s1">&#39;a merchant state change&#39;</span><span class="p">,</span> <span class="s1">&#39;deactivate&#39;</span><span class="p">,</span> <span class="s1">&#39;deactivated&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>You&rsquo;re now down from 61 lines to 40, and it just looks less copy-paste happy. You can also move out your shared contexts to separate files and reuse them in different specs. The only immediate downside is that the line numbering is a bit less informative with shared examples compared to distinct specs.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -158,6 +506,79 @@
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo monit status</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I noticed these warnings:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>15377:M 18 Nov 12:29:31.725 # You requested maxclients of 10000 requiring at least 10032 max file descriptors.
+</span><span class='line'>15377:M 18 Nov 12:29:31.725 # Redis can't set maximum open files to 10032 because of OS error: Operation not permitted.
+</span><span class='line'>15377:M 18 Nov 12:29:31.725 # Current maximum open files is 4096. maxclients has been reduced to 4064 to compensate for low ulimit. If you need higher maxclients increase 'ulimit -n'.
+</span><span class='line'>15377:M 18 Nov 12:29:31.726 # Warning: 32 bit instance detected but no memory limit set. Setting 3 GB maxmemory limit with 'noeviction' policy now.
+</span><span class='line'>                _._
+</span><span class='line'>           _.-``__ ''-._
+</span><span class='line'>      _.-``    `.  `_.  ''-._           Redis 3.0.5 (00000000/0) 32 bit
+</span><span class='line'>  .-`` .-```.  ```\/    _.,_ ''-._
+</span><span class='line'> (    '      ,       .-`  | `,    )     Running in standalone mode
+</span><span class='line'> |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+</span><span class='line'> |    `-._   `._    /     _.-'    |     PID: 15377
+</span><span class='line'>  `-._    `-._  `-./  _.-'    _.-'
+</span><span class='line'> |`-._`-._    `-.__.-'    _.-'_.-'|
+</span><span class='line'> |    `-._`-._        _.-'_.-'    |           http://redis.io
+</span><span class='line'>  `-._    `-._`-.__.-'_.-'    _.-'
+</span><span class='line'> |`-._`-._    `-.__.-'    _.-'_.-'|
+</span><span class='line'> |    `-._`-._        _.-'_.-'    |
+</span><span class='line'>  `-._    `-._`-.__.-'_.-'    _.-'
+</span><span class='line'>      `-._    `-.__.-'    _.-'
+</span><span class='line'>          `-._        _.-'
+</span><span class='line'>              `-.__.-'
+</span><span class='line'>
+</span><span class='line'>15377:M 18 Nov 12:29:31.726 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+</span><span class='line'>15377:M 18 Nov 12:29:31.727 # Server started, Redis version 3.0.5
+</span><span class='line'>15377:M 18 Nov 12:29:31.727 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To fix these warnings:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo sysctl -w net.core.somaxconn=65535
+</span><span class='line'>$ sudo sysctl -w vm.overcommit_memory=1
+</span><span class='line'>$ sudo sh -c "ulimit -n 10032 && exec su $LOGNAME"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>edit
+and edit your /etc/redis/redis.conf to set the following:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>maxmemory 2mb
+</span><span class='line'>maxmemory-policy allkeys-lru</span></code></pre></td></tr></table></div></figure>
 
 </div>
   
@@ -707,6 +1128,10 @@ Thankfully you can <a href="https://github.com/jnicklas/capybara/commit/61524b0f
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/11/25/drying-up-your-rspecs-with-shared-examples-and-shared-contexts/">DRYing Up Your Specs With Shared Examples and Shared Contexts</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/11/18/redis-monit-sidekiq-for-rails/">Redis, Monit and Sidekiq 4 for Rails</a>
       </li>
     
@@ -720,10 +1145,6 @@ Thankfully you can <a href="https://github.com/jnicklas/capybara/commit/61524b0f
     
       <li class="post">
         <a href="/blog/2014/09/22/mongo-mongoid-and-rails-4.1/">Mongo, Mongoid and Rails 4.1</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/17/updating-your-ubuntu-packages/">Updating Your Ubuntu Packages</a>
       </li>
     
   </ul>

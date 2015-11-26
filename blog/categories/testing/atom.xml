@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Testing | tirdadc]]></title>
   <link href="http://tirdadc.github.io/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://tirdadc.github.io/"/>
-  <updated>2015-11-18T11:33:17-05:00</updated>
+  <updated>2015-11-25T19:15:51-05:00</updated>
   <id>http://tirdadc.github.io/</id>
   <author>
     <name><![CDATA[tirdadc]]></name>
@@ -12,6 +12,184 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DRYing Up Your Specs With Shared Examples and Shared Contexts]]></title>
+    <link href="http://tirdadc.github.io/blog/2015/11/25/drying-up-your-rspecs-with-shared-examples-and-shared-contexts/"/>
+    <updated>2015-11-25T18:35:22-05:00</updated>
+    <id>http://tirdadc.github.io/blog/2015/11/25/drying-up-your-rspecs-with-shared-examples-and-shared-contexts</id>
+    <content type="html"><![CDATA[<p>This is an example of how to use <a href="https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context">shared contexts</a> and <a href="https://www.relishapp.com/rspec/rspec-core/v/3-4/docs/example-groups/shared-examples">shared examples</a> to refactor your <a href="http://rspec.info/">specs</a>.</p>
+
+<p>We have a Merchant model and a User model. We want to test 3 instance methods on Merchant that:</p>
+
+<ul>
+<li>change the merchant&rsquo;s state</li>
+<li>fire off an associated email</li>
+</ul>
+
+
+<p>Let&rsquo;s take the most naive approach and write 3 individual tests for these methods:</p>
+
+<pre><code class="ruby">describe '#block' do
+  let(:merchant) { build(:merchant) }
+  let(:billing_manager) { create(:user, :manager, merchant: merchant) }
+
+  before do
+    merchant.billing_user = billing_manager
+  end
+
+  it 'sets the merchant state to blocked' do
+    merchant.block
+    expect(merchant.blocked?).to be true
+  end
+
+  it 'send an email notification' do
+    expect {
+      merchant.block
+    }.to change(ActionMailer::Base.deliveries, :count).by(1)
+  end
+end
+
+describe '#unblock' do
+  let(:merchant) { build(:merchant) }
+  let(:billing_manager) { create(:user, :manager, merchant: merchant) }
+
+  before do
+    # only a blocked user can be unblocked
+    merchant.block
+    merchant.billing_user = billing_manager
+  end
+
+  it 'sets the merchant state to active' do
+    merchant.unblock
+    expect(merchant.active?).to be true
+  end
+
+  it 'send an email notification' do
+    expect {
+      merchant.unblock
+    }.to change(ActionMailer::Base.deliveries, :count).by(1)
+  end
+end
+
+describe '#deactivate' do
+  let(:merchant) { build(:merchant) }
+  let(:billing_manager) { create(:user, :manager, merchant: merchant) }
+
+  before do
+    merchant.billing_user = billing_manager
+  end
+
+  it 'sets the merchant state to deactivated' do
+    merchant.deactivate
+    expect(merchant.deactivated?).to be true
+  end
+
+  it 'send an email notification' do
+    expect {
+      merchant.deactivate
+    }.to change(ActionMailer::Base.deliveries, :count).by(1)
+  end
+end
+</code></pre>
+
+<p>You&rsquo;re testing the same things on all 3 methods, so you can leverage shared examples to rewrite that in a way where you don&rsquo;t repeat that. You also want to pass both the action to trigger and the new state to test as parameters to your shared example:</p>
+
+<pre><code class="ruby">shared_examples_for 'a merchant state change' do |action, new_state|
+  it "sets the merchant state to #{new_state}" do
+    merchant.send(action)
+    expect(merchant.send("#{new_state}?")).to be true
+  end
+
+  it 'sends an email notification' do
+    expect {
+      merchant.send(action)
+    }.to change(ActionMailer::Base.deliveries, :count).by(1)
+  end
+end
+
+describe '#block' do
+  let(:merchant) { build(:merchant) }
+  let(:billing_manager) { create(:user, :manager, merchant: merchant) }
+
+  before do
+    merchant.billing_user = billing_manager
+  end
+
+  it_behaves_like 'a merchant state change', 'block', 'blocked'
+end
+
+describe '#unblock' do
+  let(:merchant) { build(:merchant) }
+  let(:billing_manager) { create(:user, :manager, merchant: merchant) }
+
+  before do
+    merchant.billing_user = billing_manager
+    merchant.block
+  end
+
+  it_behaves_like 'a merchant state change', 'unblock', 'active'
+end
+
+describe '#deactivate' do
+  let(:merchant) { build(:merchant) }
+  let(:billing_manager) { create(:user, :manager, merchant: merchant) }
+
+  before do
+    merchant.billing_user = billing_manager
+  end
+
+  it_behaves_like 'a merchant state change', 'deactivate', 'deactivated'
+end
+</code></pre>
+
+<p>Now that you&rsquo;ve done that, you want to avoid repeating the setup portion for these tests. You can do that with <a href="https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context">shared contexts</a>:</p>
+
+<pre><code class="ruby">shared_examples_for 'a merchant state change' do |action, new_state|
+  it "sets the merchant state to #{new_state}" do
+    merchant.send(action)
+    expect(merchant.send("#{new_state}?")).to be true
+  end
+
+  it 'sends an email notification' do
+    expect {
+      merchant.send(action)
+    }.to change(ActionMailer::Base.deliveries, :count).by(1)
+  end
+end
+
+shared_context 'has a merchant and a billing manager' do
+  let(:merchant) { build(:merchant) }
+  let(:billing_manager) { create(:user, :manager, merchant: merchant) }
+
+  before do
+    merchant.billing_user = billing_manager
+  end
+end
+
+describe '#block' do
+  include_context 'has a merchant and a billing manager'
+  it_behaves_like 'a merchant state change', 'block', 'blocked'
+end
+
+describe '#unblock' do
+  include_context 'has a merchant and a billing manager'
+  before do
+    merchant.block
+  end
+
+  it_behaves_like 'a merchant state change', 'unblock', 'active'
+end
+
+describe '#deactivate' do
+  include_context 'has a merchant and a billing manager'
+  it_behaves_like 'a merchant state change', 'deactivate', 'deactivated'
+end
+</code></pre>
+
+<p>You&rsquo;re now down from 61 lines to 40, and it just looks less copy-paste happy. You can also move out your shared contexts to separate files and reuse them in different specs. The only immediate downside is that the line numbering is a bit less informative with shared examples compared to distinct specs.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Nested Feature Tests With Capybara and RSpec]]></title>

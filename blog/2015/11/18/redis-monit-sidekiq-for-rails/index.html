@@ -156,6 +156,79 @@
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo monit status</span></code></pre></td></tr></table></div></figure>
 
+
+<p>I noticed these warnings:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>15377:M 18 Nov 12:29:31.725 # You requested maxclients of 10000 requiring at least 10032 max file descriptors.
+</span><span class='line'>15377:M 18 Nov 12:29:31.725 # Redis can't set maximum open files to 10032 because of OS error: Operation not permitted.
+</span><span class='line'>15377:M 18 Nov 12:29:31.725 # Current maximum open files is 4096. maxclients has been reduced to 4064 to compensate for low ulimit. If you need higher maxclients increase 'ulimit -n'.
+</span><span class='line'>15377:M 18 Nov 12:29:31.726 # Warning: 32 bit instance detected but no memory limit set. Setting 3 GB maxmemory limit with 'noeviction' policy now.
+</span><span class='line'>                _._
+</span><span class='line'>           _.-``__ ''-._
+</span><span class='line'>      _.-``    `.  `_.  ''-._           Redis 3.0.5 (00000000/0) 32 bit
+</span><span class='line'>  .-`` .-```.  ```\/    _.,_ ''-._
+</span><span class='line'> (    '      ,       .-`  | `,    )     Running in standalone mode
+</span><span class='line'> |`-._`-...-` __...-.``-._|'` _.-'|     Port: 6379
+</span><span class='line'> |    `-._   `._    /     _.-'    |     PID: 15377
+</span><span class='line'>  `-._    `-._  `-./  _.-'    _.-'
+</span><span class='line'> |`-._`-._    `-.__.-'    _.-'_.-'|
+</span><span class='line'> |    `-._`-._        _.-'_.-'    |           http://redis.io
+</span><span class='line'>  `-._    `-._`-.__.-'_.-'    _.-'
+</span><span class='line'> |`-._`-._    `-.__.-'    _.-'_.-'|
+</span><span class='line'> |    `-._`-._        _.-'_.-'    |
+</span><span class='line'>  `-._    `-._`-.__.-'_.-'    _.-'
+</span><span class='line'>      `-._    `-.__.-'    _.-'
+</span><span class='line'>          `-._        _.-'
+</span><span class='line'>              `-.__.-'
+</span><span class='line'>
+</span><span class='line'>15377:M 18 Nov 12:29:31.726 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+</span><span class='line'>15377:M 18 Nov 12:29:31.727 # Server started, Redis version 3.0.5
+</span><span class='line'>15377:M 18 Nov 12:29:31.727 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To fix these warnings:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo sysctl -w net.core.somaxconn=65535
+</span><span class='line'>$ sudo sysctl -w vm.overcommit_memory=1
+</span><span class='line'>$ sudo sh -c "ulimit -n 10032 && exec su $LOGNAME"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>edit
+and edit your /etc/redis/redis.conf to set the following:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>maxmemory 2mb
+</span><span class='line'>maxmemory-policy allkeys-lru</span></code></pre></td></tr></table></div></figure>
+
 </div>
 
 
@@ -197,6 +270,8 @@
         <a class="basic-alignment left" href="/blog/2015/06/11/react-dot-js-firefox-issue-with-onblur/" title="Previous Post: React.js: Firefox issue with onBlur">&laquo; React.js: Firefox issue with onBlur</a>
       
       
+        <a class="basic-alignment right" href="/blog/2015/11/25/drying-up-your-rspecs-with-shared-examples-and-shared-contexts/" title="Next Post: DRYing up your specs with shared examples and shared contexts">DRYing up your specs with shared examples and shared contexts &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -208,6 +283,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/11/25/drying-up-your-rspecs-with-shared-examples-and-shared-contexts/">DRYing Up Your Specs With Shared Examples and Shared Contexts</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/11/18/redis-monit-sidekiq-for-rails/">Redis, Monit and Sidekiq 4 for Rails</a>
@@ -223,10 +302,6 @@
     
       <li class="post">
         <a href="/blog/2014/09/22/mongo-mongoid-and-rails-4.1/">Mongo, Mongoid and Rails 4.1</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2014/09/17/updating-your-ubuntu-packages/">Updating Your Ubuntu Packages</a>
       </li>
     
   </ul>
