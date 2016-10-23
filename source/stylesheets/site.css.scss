@@ -16,10 +16,21 @@ body {
   }
 }
 
+a {
+  color: #5a95e5;
+  text-decoration: none;
+  &:hover {
+    color: #4a71a7;
+  }
+}
+
 h1 {
   font-size: 2em;
   font-weight: bold;
   margin: 0;
+  a {
+    text-decoration: none;
+  }
 }
 
 h2 {
@@ -27,15 +38,12 @@ h2 {
   margin: 0;
 }
 
-a {
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
+h3 {
+  margin: 0;
 }
 
 article {
-  margin-bottom: 4em;
+  margin: 1em 0;
 }
 
 time {

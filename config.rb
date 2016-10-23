@@ -36,7 +36,7 @@ activate :blog do |blog|
   blog.prefix = 'blog'
   blog.summary_length = 100
   blog.paginate = true
-  blog.per_page = 5
+  blog.per_page = 10
 end
 
 ###

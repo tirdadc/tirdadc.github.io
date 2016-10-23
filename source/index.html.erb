@@ -10,20 +10,18 @@ pageable: true
         <a href="<%= article.url %>"><%= article.title %></a>
       </h3>
       <time><%= article.date.strftime('%b %e %Y') %></time>
-
-      <%= article.summary %>
-
-      <a href="<%= article.url %>">Read more ></a>
     </article>
   <% end %>
 
-  <div class='pagination'>
-    <% unless page_number == 1 %>
-      <%= link_to 'Previous', prev_page %>
-    <% end %>
-    <%= page_number %> of <%= num_pages %>
-    <% unless page_number == num_pages %>
-      <%= link_to 'Next', next_page %>
-    <% end %>
-  </div>
+  <% unless num_pages == 1 %>
+    <div class='pagination'>
+      <% unless page_number == 1 %>
+        <%= link_to 'Previous', prev_page %>
+      <% end %>
+      <%= page_number %> of <%= num_pages %>
+      <% unless page_number == num_pages %>
+        <%= link_to 'Next', next_page %>
+      <% end %>
+    </div>
+  <% end %>
 </div>
