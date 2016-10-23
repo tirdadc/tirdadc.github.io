@@ -16,6 +16,12 @@ body {
   }
 }
 
+@media (min-width: 1200px) {
+  body {
+    max-width: 40%;
+  }
+}
+
 a {
   color: #305d9a;
   text-decoration: none;
