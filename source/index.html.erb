@@ -10,9 +10,11 @@ pageable: true
         <a href="<%= article.url %>"><%= article.title %></a>
       </h3>
       <time><%= article.date.strftime('%b %e %Y') %></time>
-      <% article.tags.each do |tag| %>
-        <%= link_to tag, tag_path(tag) %>
-      <% end %>
+      <div class="tags">
+        <% article.tags.each do |tag| %>
+          <%= link_to tag, tag_path(tag) %>
+        <% end %>
+      </div>
     </article>
   <% end %>
 

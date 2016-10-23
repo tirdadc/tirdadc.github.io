@@ -1,7 +1,7 @@
 ---
 pageable: true
 ---
-<% @title = tagname %>
+<% content_for(:title, tagname) %>
 
 <div>
   <% articles.each do |article| %>
