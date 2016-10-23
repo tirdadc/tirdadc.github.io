@@ -6,7 +6,7 @@ tags: React.js, Firefox
 
 This started as a simple enough component to build in [React.js](https://facebook.github.io/react/): a text block that becomes an editable input when you click on it and reverts to text on the blur event.
 
-``` javascript
+``` jsx
 var InputField = React.createClass({
   getInitialState: function() {
     return {
@@ -63,7 +63,7 @@ This works perfectly fine in Chrome and Safari, but due to some [potential bug](
 
 This can be fixed by adding this to onBlur:
 
-``` javascript
+``` jsx
 onBlur: function(e) {
   // Firefox issue
   if (e.nativeEvent.explicitOriginalTarget &&
