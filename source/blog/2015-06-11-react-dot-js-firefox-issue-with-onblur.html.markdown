@@ -42,7 +42,8 @@ var InputField = React.createClass({
           value={this.state.value}
           onChange={this.updateValue}
           autoFocus={true}
-          onBlur={this.onBlur} />;
+          onBlur={this.onBlur} />
+      )
     }
     else {
       return (
