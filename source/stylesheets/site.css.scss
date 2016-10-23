@@ -1,0 +1,48 @@
+@charset "utf-8";
+@import "normalize";
+
+body {
+  background: white;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1em;
+  padding: 1em;
+}
+
+
+@media (min-width: 1024px) {
+  body {
+    max-width: 60%;
+    margin: 0 auto;
+  }
+}
+
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0;
+}
+
+h2 {
+  color: #aaa;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+article {
+  margin-bottom: 4em;
+}
+
+time {
+  color: #aaa;
+}
+
+.highlight {
+  overflow: auto;
+  padding: 1.2em;
+}

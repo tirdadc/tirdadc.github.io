@@ -1,0 +1,29 @@
+---
+title: tirdadc
+pageable: true
+---
+
+<div>
+  <% page_articles.each do |article| %>
+    <article>
+      <h3>
+        <a href="<%= article.url %>"><%= article.title %></a>
+      </h3>
+      <time><%= article.date.strftime('%b %e %Y') %></time>
+
+      <%= article.summary %>
+
+      <a href="<%= article.url %>">Read more ></a>
+    </article>
+  <% end %>
+
+  <div class='pagination'>
+    <% unless page_number == 1 %>
+      <%= link_to 'Previous', prev_page %>
+    <% end %>
+    <%= page_number %> of <%= num_pages %>
+    <% unless page_number == num_pages %>
+      <%= link_to 'Next', next_page %>
+    <% end %>
+  </div>
+</div>
