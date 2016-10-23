@@ -19,9 +19,12 @@
     <div class="header">
       <h1><a href='/'>tirdadc</a></h1>
       <h2>Web Development | Ruby on Rails | React.js</h2>
+    </div>
+    <article>
       <h3><%= current_page.data.title || '' %></h3>
       <time><%= current_page.date.strftime('%b %e %Y') %></time>
-    </div>
-    <%= yield %>
+      <%= yield %>
+    </article>
   </div>
+  <%= partial "footer" %>
 </html>
