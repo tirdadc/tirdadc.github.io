@@ -1,7 +1,7 @@
 ---
 title: "Nested feature tests with Capybara and RSpec"
 date: 2014-09-11 15:46:00 -0400
-categories: [RSpec, Capybara, Ruby On Rails, testing]
+tags: Rspec, Capybara, Ruby On Rails, testing
 ---
 
 I recently wrote some automated user acceptance tests with [Capybara](https://github.com/jnicklas/capybara) for a multi-step wizard, and the initial approach didn't seem very DRY. I was rehashing the steps involved in previous scenarios to reach whatever step was currently being tested, and I was combining multiple expectations at various steps:

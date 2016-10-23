@@ -1,8 +1,7 @@
 ---
 title: "React.js: Firefox issue with onBlur"
 date: 2015-06-11 07:38:30 -0400
-comments: true
-categories: [React.js, Firefox]
+tags: React.js, Firefox
 ---
 
 This started as a simple enough component to build in [React.js](https://facebook.github.io/react/): a text block that becomes an editable input when you click on it and reverts to text on the blur event.

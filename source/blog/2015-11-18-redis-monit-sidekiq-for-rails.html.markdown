@@ -1,7 +1,7 @@
 ---
 title: "Redis, Monit and Sidekiq 4 for Rails"
 date: 2015-11-18 09:05:48 -0500
-categories: [Redis, Monit, Sidekiq]
+tags: Redis, Monit, Sidekiq
 ---
 
 I recently upgraded my [Sidekiq](https://github.com/mperham/sidekiq) version to 4.0.0, which required upgrading my rather ancient version of Redis on my production environment. I had already set up Monit, but I'll cover the steps to get that up and running too.

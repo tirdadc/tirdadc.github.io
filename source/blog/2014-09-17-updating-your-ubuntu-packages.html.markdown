@@ -1,7 +1,7 @@
 ---
 title: "Updating your Ubuntu packages"
 date: 2014-09-17 15:04:37 -0400
-categories: [Ubuntu, computer janitor]
+tags: Ubuntu, computer janitor
 ---
 
 <code>sudo apt-get update</code><br>

@@ -1,7 +1,7 @@
 ---
 title: "DRYing up your Rspecs with shared examples and shared contexts"
 date: 2015-11-25 18:35:22 -0500
-categories: [Rspec, testing]
+tags: Rspec, testing
 ---
 
 This is an example of how to use [shared contexts](https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context) and [shared examples](https://www.relishapp.com/rspec/rspec-core/v/3-4/docs/example-groups/shared-examples) to refactor your [specs](http://rspec.info/).

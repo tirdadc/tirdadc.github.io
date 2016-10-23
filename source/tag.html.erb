@@ -1,10 +1,10 @@
 ---
-title: tirdadc
 pageable: true
 ---
+<% @title = tagname %>
 
 <div>
-  <% page_articles.each do |article| %>
+  <% articles.each do |article| %>
     <article>
       <h3>
         <a href="<%= article.url %>"><%= article.title %></a>
@@ -14,6 +14,7 @@ pageable: true
         <%= link_to tag, tag_path(tag) %>
       <% end %>
     </article>
+
   <% end %>
 
   <% unless num_pages == 1 %>

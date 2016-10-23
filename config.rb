@@ -37,6 +37,8 @@ activate :blog do |blog|
   blog.summary_length = 100
   blog.paginate = true
   blog.per_page = 10
+  blog.tag_template = "tag.html"
+  blog.taglink = "categories/{tag}.html"
 end
 
 ###
