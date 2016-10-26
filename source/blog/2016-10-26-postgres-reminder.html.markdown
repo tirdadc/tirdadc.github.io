@@ -1,6 +1,6 @@
 ---
 title: Postgres Reminder
-date: 2016-10-26 18:56 EDT
+date: 2016-10-26 18:56 UTC
 tags: Postgres
 ---
 Finally moving this out of `notes.txt` into the blog for future reference.
