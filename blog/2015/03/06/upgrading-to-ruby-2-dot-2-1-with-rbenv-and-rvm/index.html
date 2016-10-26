@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>Upgrading to Ruby 2.2.1 with rbenv and RVM</title>
+
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+    <link href="/stylesheets/site.css" rel="stylesheet" />
+    <link href="/stylesheets/highlighting.css" rel="stylesheet" />
+    <script src="/javascripts/all.js"></script>
+  </head>
+
+  <div class="blog blog_2015 blog_2015_03 blog_2015_03_06 blog_2015_03_06_upgrading-to-ruby-2-dot-2-1-with-rbenv-and-rvm blog_2015_03_06_upgrading-to-ruby-2-dot-2-1-with-rbenv-and-rvm_index">
+    <div class="header">
+      <h1><a href='/'>tirdadc</a></h1>
+      <h2>Web Development | Ruby on Rails | React.js</h2>
+    </div>
+    <article>
+      <h3>Upgrading to Ruby 2.2.1 with rbenv and RVM</h3>
+      <time>Mar  6 2015</time>
+      <p>Another one of those brief utilitarian blog posts for myself.</p>
+
+<p>rbenv:
+<code>sh
+rbenv install -l
+rbenv install 2.2.1
+rbenv local 2.2.1
+rbenv rehash
+gem install bundler
+bundle install
+</code></p>
+
+<p>RVM:
+<code>sh
+rvm install 2.2.1
+rvm use 2.2.1
+bundle install
+</code></p>
+
+<p>Since Passenger is made aware of which Ruby to use, update the vhost entry too:</p>
+<pre class="highlight plaintext"><code># /etc/apache2/sites-enabled/example.com
+PassengerRuby /home/johndoe/.rvm/wrappers/ruby-2.2.1/ruby
+</code></pre>
+<p>and you then have to restart Apache:
+<code>sudo apache2ctl graceful</code></p>
+
+    </article>
+  </div>
+  <footer>
+  <div>© 2016 Tirdad C.</div>
+  <div>
+    <a href="http://stackoverflow.com/users/3102766/tirdadc">Stack Overflow</a> |
+    <a href="https://github.com/tirdadc">GitHub</a>
+  </div>
+</footer>
+
+</html>

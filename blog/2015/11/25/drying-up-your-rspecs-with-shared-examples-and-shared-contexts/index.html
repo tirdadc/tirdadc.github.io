@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>DRYing up your Rspecs with shared examples and shared contexts</title>
+
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+    <link href="/stylesheets/site.css" rel="stylesheet" />
+    <link href="/stylesheets/highlighting.css" rel="stylesheet" />
+    <script src="/javascripts/all.js"></script>
+  </head>
+
+  <div class="blog blog_2015 blog_2015_11 blog_2015_11_25 blog_2015_11_25_drying-up-your-rspecs-with-shared-examples-and-shared-contexts blog_2015_11_25_drying-up-your-rspecs-with-shared-examples-and-shared-contexts_index">
+    <div class="header">
+      <h1><a href='/'>tirdadc</a></h1>
+      <h2>Web Development | Ruby on Rails | React.js</h2>
+    </div>
+    <article>
+      <h3>DRYing up your Rspecs with shared examples and shared contexts</h3>
+      <time>Nov 25 2015</time>
+      <p>This is an example of how to use <a href="https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context">shared contexts</a> and <a href="https://www.relishapp.com/rspec/rspec-core/v/3-4/docs/example-groups/shared-examples">shared examples</a> to refactor your <a href="http://rspec.info/">specs</a>.</p>
+
+<p>We have a Merchant model and a User model. We want to test 3 instance methods on Merchant that:</p>
+
+<ul>
+<li>change the merchant&rsquo;s state</li>
+<li>fire off an associated email</li>
+</ul>
+
+<p>Let&rsquo;s take the most naive approach and write 3 individual tests for these methods:</p>
+<pre class="highlight ruby"><code><span class="n">describe</span> <span class="s1">'#block'</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant: </span><span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'sets the merchant state to blocked'</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">block</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="p">.</span><span class="nf">blocked?</span><span class="p">).</span><span class="nf">to</span> <span class="n">be</span> <span class="kp">true</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'send an email notification'</span> <span class="k">do</span>
+    <span class="n">expect</span> <span class="p">{</span>
+      <span class="n">merchant</span><span class="p">.</span><span class="nf">block</span>
+    <span class="p">}.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="s1">'#unblock'</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant: </span><span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="c1"># only a blocked user can be unblocked</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">block</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'sets the merchant state to active'</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">unblock</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="p">.</span><span class="nf">active?</span><span class="p">).</span><span class="nf">to</span> <span class="n">be</span> <span class="kp">true</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'send an email notification'</span> <span class="k">do</span>
+    <span class="n">expect</span> <span class="p">{</span>
+      <span class="n">merchant</span><span class="p">.</span><span class="nf">unblock</span>
+    <span class="p">}.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="s1">'#deactivate'</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant: </span><span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'sets the merchant state to deactivated'</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">deactivate</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="p">.</span><span class="nf">deactivated?</span><span class="p">).</span><span class="nf">to</span> <span class="n">be</span> <span class="kp">true</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'send an email notification'</span> <span class="k">do</span>
+    <span class="n">expect</span> <span class="p">{</span>
+      <span class="n">merchant</span><span class="p">.</span><span class="nf">deactivate</span>
+    <span class="p">}.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+<p>You&rsquo;re testing the same things on all 3 methods, so you can leverage shared examples to rewrite that in a way where you don&rsquo;t repeat that. You also want to pass both the action to trigger and the new state to test as parameters to your shared example:</p>
+<pre class="highlight ruby"><code><span class="n">shared_examples_for</span> <span class="s1">'a merchant state change'</span> <span class="k">do</span> <span class="o">|</span><span class="n">action</span><span class="p">,</span> <span class="n">new_state</span><span class="o">|</span>
+  <span class="n">it</span> <span class="s2">"sets the merchant state to </span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">"</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">?"</span><span class="p">)).</span><span class="nf">to</span> <span class="n">be</span> <span class="kp">true</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'sends an email notification'</span> <span class="k">do</span>
+    <span class="n">expect</span> <span class="p">{</span>
+      <span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="p">}.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="s1">'#block'</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant: </span><span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+  <span class="k">end</span>
+
+  <span class="n">it_behaves_like</span> <span class="s1">'a merchant state change'</span><span class="p">,</span> <span class="s1">'block'</span><span class="p">,</span> <span class="s1">'blocked'</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="s1">'#unblock'</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant: </span><span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">block</span>
+  <span class="k">end</span>
+
+  <span class="n">it_behaves_like</span> <span class="s1">'a merchant state change'</span><span class="p">,</span> <span class="s1">'unblock'</span><span class="p">,</span> <span class="s1">'active'</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="s1">'#deactivate'</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant: </span><span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+  <span class="k">end</span>
+
+  <span class="n">it_behaves_like</span> <span class="s1">'a merchant state change'</span><span class="p">,</span> <span class="s1">'deactivate'</span><span class="p">,</span> <span class="s1">'deactivated'</span>
+<span class="k">end</span>
+</code></pre>
+<p>Now that you&rsquo;ve done that, you want to avoid repeating the setup portion for these tests. You can do that with <a href="https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context">shared contexts</a>:</p>
+<pre class="highlight ruby"><code><span class="n">shared_examples_for</span> <span class="s1">'a merchant state change'</span> <span class="k">do</span> <span class="o">|</span><span class="n">action</span><span class="p">,</span> <span class="n">new_state</span><span class="o">|</span>
+  <span class="n">it</span> <span class="s2">"sets the merchant state to </span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">"</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">?"</span><span class="p">)).</span><span class="nf">to</span> <span class="n">be</span> <span class="kp">true</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'sends an email notification'</span> <span class="k">do</span>
+    <span class="n">expect</span> <span class="p">{</span>
+      <span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+    <span class="p">}.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">shared_context</span> <span class="s1">'has a merchant and a billing manager'</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant: </span><span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">billing_user</span> <span class="o">=</span> <span class="n">billing_manager</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="s1">'#block'</span> <span class="k">do</span>
+  <span class="n">include_context</span> <span class="s1">'has a merchant and a billing manager'</span>
+  <span class="n">it_behaves_like</span> <span class="s1">'a merchant state change'</span><span class="p">,</span> <span class="s1">'block'</span><span class="p">,</span> <span class="s1">'blocked'</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="s1">'#unblock'</span> <span class="k">do</span>
+  <span class="n">include_context</span> <span class="s1">'has a merchant and a billing manager'</span>
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="n">merchant</span><span class="p">.</span><span class="nf">block</span>
+  <span class="k">end</span>
+
+  <span class="n">it_behaves_like</span> <span class="s1">'a merchant state change'</span><span class="p">,</span> <span class="s1">'unblock'</span><span class="p">,</span> <span class="s1">'active'</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="s1">'#deactivate'</span> <span class="k">do</span>
+  <span class="n">include_context</span> <span class="s1">'has a merchant and a billing manager'</span>
+  <span class="n">it_behaves_like</span> <span class="s1">'a merchant state change'</span><span class="p">,</span> <span class="s1">'deactivate'</span><span class="p">,</span> <span class="s1">'deactivated'</span>
+<span class="k">end</span>
+</code></pre>
+<p>You&rsquo;re now down from 61 lines to 40, and it just looks less copy-paste happy. You can also move out your shared contexts to separate files and reuse them in different specs. The only immediate downside is that the line numbering is a bit less informative with shared examples compared to distinct specs.</p>
+
+<p>Like anything DRY-related, use this responsibly and don&rsquo;t create a nightmare bizarro world of obfuscated tests.</p>
+
+    </article>
+  </div>
+  <footer>
+  <div>© 2016 Tirdad C.</div>
+  <div>
+    <a href="http://stackoverflow.com/users/3102766/tirdadc">Stack Overflow</a> |
+    <a href="https://github.com/tirdadc">GitHub</a>
+  </div>
+</footer>
+
+</html>

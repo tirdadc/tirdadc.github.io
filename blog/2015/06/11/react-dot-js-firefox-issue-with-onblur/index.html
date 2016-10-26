@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>React.js: Firefox issue with onBlur</title>
+
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+    <link href="/stylesheets/site.css" rel="stylesheet" />
+    <link href="/stylesheets/highlighting.css" rel="stylesheet" />
+    <script src="/javascripts/all.js"></script>
+  </head>
+
+  <div class="blog blog_2015 blog_2015_06 blog_2015_06_11 blog_2015_06_11_react-dot-js-firefox-issue-with-onblur blog_2015_06_11_react-dot-js-firefox-issue-with-onblur_index">
+    <div class="header">
+      <h1><a href='/'>tirdadc</a></h1>
+      <h2>Web Development | Ruby on Rails | React.js</h2>
+    </div>
+    <article>
+      <h3>React.js: Firefox issue with onBlur</h3>
+      <time>Jun 11 2015</time>
+      <p>This started as a simple enough component to build in <a href="https://facebook.github.io/react/">React.js</a>: a text block that becomes an editable input when you click on it and reverts to text on the blur event.</p>
+<pre class="highlight jsx"><code><span class="kd">var</span> <span class="nx">InputField</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="na">getInitialState</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">value</span><span class="p">:</span>  <span class="k">this</span><span class="p">.</span><span class="nx">props</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span>
+      <span class="na">active</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="na">updateValue</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+      <span class="na">value</span><span class="p">:</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span>
+    <span class="p">});</span>
+  <span class="p">},</span>
+
+  <span class="na">handleClick</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+      <span class="na">active</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">});</span>
+  <span class="p">},</span>
+
+  <span class="na">onBlur</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+      <span class="na">active</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">});</span>
+  <span class="p">},</span>
+
+  <span class="na">render</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">active</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">(</span>
+        <span class="p">&lt;</span><span class="nt">input</span>
+          <span class="na">type=</span><span class="s1">'text'</span>
+          <span class="na">value=</span><span class="si">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">value</span><span class="si">}</span>
+          <span class="na">onChange=</span><span class="si">{</span><span class="k">this</span><span class="p">.</span><span class="nx">updateValue</span><span class="si">}</span>
+          <span class="na">autoFocus=</span><span class="si">{</span><span class="kc">true</span><span class="si">}</span>
+          <span class="na">onBlur=</span><span class="si">{</span><span class="k">this</span><span class="p">.</span><span class="nx">onBlur</span><span class="si">}</span> <span class="p">/&gt;</span>
+      <span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">(</span>
+        <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+          <span class="p">&lt;</span><span class="nt">span</span> <span class="na">onClick=</span><span class="si">{</span><span class="k">this</span><span class="p">.</span><span class="nx">handleClick</span><span class="si">}</span><span class="p">&gt;</span><span class="si">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">value</span><span class="si">}</span><span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+      <span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+
+<span class="nx">React</span><span class="p">.</span><span class="nx">render</span><span class="p">(&lt;</span><span class="nc">InputField</span> <span class="na">value=</span><span class="s2">"click me to edit me"</span> <span class="p">/&gt;,</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'container'</span><span class="p">));</span>
+
+</code></pre>
+<p>This works perfectly fine in Chrome and Safari, but due to some <a href="https://www.google.com/search?q=firefox+onblur+bug">potential bug</a>, Firefox triggers the onBlur on the initial click on the text, reverting the active flag to false and preventing the input from ever being rendered.</p>
+
+<p>This can be fixed by adding this to onBlur:</p>
+<pre class="highlight jsx"><code><span class="nx">onBlur</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Firefox issue</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">nativeEvent</span><span class="p">.</span><span class="nx">explicitOriginalTarget</span> <span class="o">&amp;&amp;</span>
+      <span class="nx">e</span><span class="p">.</span><span class="nx">nativeEvent</span><span class="p">.</span><span class="nx">explicitOriginalTarget</span> <span class="o">==</span> <span class="nx">e</span><span class="p">.</span><span class="nx">nativeEvent</span><span class="p">.</span><span class="nx">originalTarget</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span>
+    <span class="na">active</span><span class="p">:</span> <span class="kc">false</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+</code></pre>
+<p>JSFiddle: http://jsfiddle.net/gmk316qd/1/</p>
+
+    </article>
+  </div>
+  <footer>
+  <div>© 2016 Tirdad C.</div>
+  <div>
+    <a href="http://stackoverflow.com/users/3102766/tirdadc">Stack Overflow</a> |
+    <a href="https://github.com/tirdadc">GitHub</a>
+  </div>
+</footer>
+
+</html>
