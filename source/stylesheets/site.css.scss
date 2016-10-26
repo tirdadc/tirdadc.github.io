@@ -49,6 +49,11 @@ h3 {
   margin: 0;
 }
 
+h4 {
+  margin: 2em 0 0;
+  border-bottom: 1px solid #aaa;
+}
+
 article {
   margin: 1em 0;
 }
@@ -71,4 +76,20 @@ footer {
   &:not(:last-child):after {
     content: ', ';
   }
+}
+
+dl {
+  margin-top: 0.5em;
+  dt {
+    font-weight: bold;
+  }
+  dd {
+    margin: 0 0 0.5em;
+  }
+}
+
+ul {
+  margin-top: 0;
+  list-style: inside;
+  padding-left: 0.5em;
 }
