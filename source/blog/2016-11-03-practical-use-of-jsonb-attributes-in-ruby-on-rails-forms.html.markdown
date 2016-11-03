@@ -1,5 +1,5 @@
 ---
-title: Using JSONB attributes in Ruby on Rails
+title: Practical use of JSONB attributes in Ruby on Rails forms
 date: 2016-11-03 07:31:22 -0500
 tags: Ruby on Rails, Postgres
 ---
