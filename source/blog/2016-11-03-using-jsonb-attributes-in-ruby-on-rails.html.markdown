@@ -1,6 +1,6 @@
 ---
 title: Using JSONB attributes in Ruby on Rails
-date: 2016-11-03 22:42 UTC
+date: 2016-11-03 09:31:22 -0500
 tags: Ruby on Rails, Postgres
 ---
 
