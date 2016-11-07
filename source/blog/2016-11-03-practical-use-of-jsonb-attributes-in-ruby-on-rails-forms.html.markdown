@@ -1,7 +1,7 @@
 ---
 title: Practical use of JSONB attributes in Ruby on Rails forms
 date: 2016-11-03 07:31:22 -0500
-tags: Ruby on Rails, Postgres
+tags: Ruby On Rails, Postgres
 ---
 
 As you probably already know by now, Postgres 9.4 introduced JSONB as a new column type, effectively allowing you to use it both as a relational database and a full-fledged indexed and queryable document store when needed instead of trying to shoehorn everything into the latter and then dealing with the inevitable aftermath. Ruby on Rails has provided support for JSONB since [4.2](http://guides.rubyonrails.org/4_2_release_notes.html).
