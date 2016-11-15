@@ -96,7 +96,7 @@ The progress bar is enabled by default, so you can remove this:
 
 Fix some deprecation notices thrown during tests:
 
-``` ruby
+``` diff
 # config/environments/test.rb
 
 -  config.serve_static_files  = true
