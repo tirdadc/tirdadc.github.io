@@ -25,23 +25,19 @@
       <time>Mar  6 2015</time>
       <p>Another one of those brief utilitarian blog posts for myself.</p>
 
-<p>rbenv:
-<code>sh
-rbenv install -l
+<p>rbenv:</p>
+<pre class="highlight shell"><code>rbenv install -l
 rbenv install 2.2.1
-rbenv local 2.2.1
+rbenv <span class="nb">local </span>2.2.1
 rbenv rehash
 gem install bundler
 bundle install
-</code></p>
-
-<p>RVM:
-<code>sh
-rvm install 2.2.1
+</code></pre>
+<p>RVM:</p>
+<pre class="highlight shell"><code>rvm install 2.2.1
 rvm use 2.2.1
 bundle install
-</code></p>
-
+</code></pre>
 <p>Since Passenger is made aware of which Ruby to use, update the vhost entry too:</p>
 <pre class="highlight plaintext"><code># /etc/apache2/sites-enabled/example.com
 PassengerRuby /home/johndoe/.rvm/wrappers/ruby-2.2.1/ruby
