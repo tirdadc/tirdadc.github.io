@@ -1,6 +1,7 @@
 ---
 title: "Upgrading to Ruby 2.2.1 with rbenv and RVM"
 date: 2015-03-06 18:14:36 -0500
+tags: Ruby, RVM, rbenv
 ---
 
 Another one of those brief utilitarian blog posts for myself.

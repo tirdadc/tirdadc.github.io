@@ -2,7 +2,7 @@
 title: "Mongo, Mongoid and Rails 4.1"
 date: 2014-09-22 20:41:22 -0400
 comments: true
-tags: Ruby On Rails, Rails 4.1, Mongo, Mongoid
+tags: Ruby On Rails, Ruby On Rails 4.1, Mongo, Mongoid
 ---
 
 I typically forget to set the <code>--skip-active-record</code> when creating a new app, so this is the
