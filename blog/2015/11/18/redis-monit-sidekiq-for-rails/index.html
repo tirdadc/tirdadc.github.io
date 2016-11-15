@@ -30,9 +30,8 @@
 <p><a href="https://mmonit.com/monit/">Monit</a> is a small Open Source utility for managing and monitoring Unix systems. We&rsquo;re going to use it to insure that Redis is always running, and restarted if the process goes down or the server gets rebooted.</p>
 
 <h2>Install Monit</h2>
-
-<p><code>$ sudo apt-get install monit</code></p>
-
+<pre class="highlight plaintext"><code>$ sudo apt-get install monit
+</code></pre>
 <h2>Configure Monit</h2>
 
 <p>Your main monit configuration file will be in <code>/etc/monit/monitrc</code>, and you&rsquo;re going to add a <code>redis.conf</code> file under <code>/etc/monit/conf.d/</code>.</p>
