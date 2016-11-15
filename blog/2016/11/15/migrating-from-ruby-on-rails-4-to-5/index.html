@@ -82,13 +82,13 @@
 <h4>Specs</h4>
 
 <p>Fix some deprecation notices thrown during tests:</p>
-<pre class="highlight ruby"><code><span class="c1"># config/environments/test.rb</span>
+<pre class="highlight diff"><code># config/environments/test.rb
 
-<span class="o">-</span>  <span class="n">config</span><span class="p">.</span><span class="nf">serve_static_files</span>  <span class="o">=</span> <span class="kp">true</span>
-<span class="o">-</span>  <span class="n">config</span><span class="p">.</span><span class="nf">static_cache_control</span> <span class="o">=</span> <span class="s1">'public, max-age=3600'</span>
-<span class="o">+</span>  <span class="n">config</span><span class="p">.</span><span class="nf">public_file_server</span><span class="p">.</span><span class="nf">enabled</span> <span class="o">=</span> <span class="kp">true</span>
-<span class="o">+</span>  <span class="n">config</span><span class="p">.</span><span class="nf">public_file_server</span><span class="p">.</span><span class="nf">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">'Cache-Control'</span> <span class="o">=&gt;</span> <span class="s1">'public, max-age=3600'</span> <span class="p">}</span>
-</code></pre>
+<span class="gd">-  config.serve_static_files  = true
+-  config.static_cache_control = 'public, max-age=3600'
+</span><span class="gi">+  config.public_file_server.enabled = true
++  config.public_file_server.headers = { 'Cache-Control' =&gt; 'public, max-age=3600' }
+</span></code></pre>
 <p>You&rsquo;ll need to explicitly state params as a hash:</p>
 <pre class="highlight diff"><code>describe "GET edit" do
   it "assigns the requested user as @user" do
