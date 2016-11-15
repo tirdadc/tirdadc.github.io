@@ -32,4 +32,7 @@ PassengerRuby /home/johndoe/.rvm/wrappers/ruby-2.2.1/ruby
 ```
 
 and you then have to restart Apache:
-`sudo apache2ctl graceful`
+
+```
+sudo apache2ctl graceful
+```

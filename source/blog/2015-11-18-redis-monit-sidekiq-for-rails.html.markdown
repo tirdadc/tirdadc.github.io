@@ -12,7 +12,9 @@ I recently upgraded my [Sidekiq](https://github.com/mperham/sidekiq) version to 
 
 ## Install Monit
 
-`$ sudo apt-get install monit`
+```
+$ sudo apt-get install monit
+```
 
 ## Configure Monit
 
