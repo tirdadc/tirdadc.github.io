@@ -31,11 +31,11 @@
 <pre class="highlight diff"><code><span class="gd">-gem 'rails', '~&gt; 4.2.5'
 </span><span class="gi">+gem 'rails', '~&gt; 5.0.0'
 </span></code></pre>
-<p>If you&rsquo;re using devise, switch to the github branch:</p>
+<p>If you&rsquo;re using <a href="https://github.com/plataformatec/devise">devise</a>, switch to the github branch:</p>
 <pre class="highlight diff"><code><span class="gd">-gem 'devise'
 </span><span class="gi">+gem 'devise', github: 'plataformatec/devise'
 </span></code></pre>
-<p>Same with Sinatra:</p>
+<p>Same with <a href="https://github.com/sinatra/sinatra">Sinatra</a>:</p>
 <pre class="highlight diff"><code><span class="gd">-gem 'sinatra', require: nil
 </span><span class="gi">+gem 'sinatra', require: nil, github: 'sinatra'
 </span></code></pre>
@@ -49,7 +49,7 @@
 <p>If you were using <code>transactional_fixtures = true</code> and <code>test_after_commit</code>, you can now get rid of the gem:</p>
 <pre class="highlight diff"><code><span class="gd">-  gem 'test_after_commit'
 </span></code></pre>
-<p>If you&rsquo;re using quiet_assets, you can remove it and enable a new flag to have the same behavior:</p>
+<p>If you&rsquo;re using <a href="https://github.com/evrone/quiet_assets">quiet_assets</a>, you can remove it and enable a new flag to have the same behavior:</p>
 <pre class="highlight diff"><code><span class="gd">-gem 'quiet_assets'
 </span></code></pre><pre class="highlight ruby"><code><span class="c1"># config/environments/development.rb</span>
 
