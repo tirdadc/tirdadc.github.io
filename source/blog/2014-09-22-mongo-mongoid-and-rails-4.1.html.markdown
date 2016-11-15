@@ -35,7 +35,9 @@ config.active_record.dump_schema_after_migration = false
 ``` ruby
 require 'rails/all'
 ```
+
 to:
+
 ``` ruby
 require "action_controller/railtie"
 require "action_mailer/railtie"
