@@ -15,14 +15,14 @@ Start off by setting the Rails version to 5 in your Gemfile:
 +gem 'rails', '~> 5.0.0'
 ```
 
-If you're using devise, switch to the github branch:
+If you're using [devise](https://github.com/plataformatec/devise), switch to the github branch:
 
 ``` diff
 -gem 'devise'
 +gem 'devise', github: 'plataformatec/devise'
 ```
 
-Same with Sinatra:
+Same with [Sinatra](https://github.com/sinatra/sinatra):
 
 ``` diff
 -gem 'sinatra', require: nil
@@ -48,7 +48,7 @@ If you were using `transactional_fixtures = true` and `test_after_commit`, you c
 -  gem 'test_after_commit'
 ```
 
-If you're using quiet_assets, you can remove it and enable a new flag to have the same behavior:
+If you're using [quiet_assets](https://github.com/evrone/quiet_assets), you can remove it and enable a new flag to have the same behavior:
 
 ``` diff
 -gem 'quiet_assets'
