@@ -23,6 +23,12 @@
     <article>
       <h3>Nested feature tests with Capybara and RSpec</h3>
       <time>Sep 11 2014</time>
+      <div class="tags">
+          <a href="/blog/categories/rspec/">Rspec</a>
+          <a href="/blog/categories/capybara/">Capybara</a>
+          <a href="/blog/categories/ruby-on-rails/">Ruby On Rails</a>
+          <a href="/blog/categories/testing/">testing</a>
+      </div>
       <p>I recently wrote some automated user acceptance tests with <a href="https://github.com/jnicklas/capybara">Capybara</a> for a multi-step wizard, and the initial approach didn&rsquo;t seem very DRY. I was rehashing the steps involved in previous scenarios to reach whatever step was currently being tested, and I was combining multiple expectations at various steps:</p>
 <pre class="highlight ruby"><code><span class="n">feature</span> <span class="s1">'User creates a thing'</span> <span class="k">do</span>
   <span class="no">Capybara</span><span class="p">.</span><span class="nf">javascript_driver</span> <span class="o">=</span> <span class="ss">:poltergeist</span>
