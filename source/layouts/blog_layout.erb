@@ -23,6 +23,11 @@
     <article>
       <h3><%= current_page.data.title || '' %></h3>
       <time><%= current_page.date.strftime('%b %e %Y') %></time>
+      <div class="tags">
+        <% current_page.tags.each do |tag| %>
+          <%= link_to tag, tag_path(tag) %>
+        <% end %>
+      </div>
       <%= yield %>
     </article>
   </div>
