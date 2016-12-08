@@ -40,8 +40,8 @@ feature 'User creates a thing' do
 end
 ```
 
-<br>
 Thankfully you can [nest features since the 2.2.1 version](https://github.com/jnicklas/capybara/commit/61524b0fd32a1fb55b82853bdc4a0293e9fcdef0), which allows you to better separate the tests and setups while sequentially continuing from whatever state the previous test left you in:
+
 ``` ruby
 feature 'User creates a thing' do
   Capybara.javascript_driver = :poltergeist
