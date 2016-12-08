@@ -62,55 +62,52 @@
     <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
-<p><br>
-Thankfully you can <a href="https://github.com/jnicklas/capybara/commit/61524b0fd32a1fb55b82853bdc4a0293e9fcdef0">nest features since the 2.2.1 version</a>, which allows you to better separate the tests and setups while sequentially continuing from whatever state the previous test left you in:
-&ldquo;` ruby
-feature &lsquo;User creates a thing&rsquo; do
-  Capybara.javascript<em>driver = :poltergeist
-  WebMock.disable</em>net<em>connect!(:allow</em>localhost =&gt; true)</p>
+<p>Thankfully you can <a href="https://github.com/jnicklas/capybara/commit/61524b0fd32a1fb55b82853bdc4a0293e9fcdef0">nest features since the 2.2.1 version</a>, which allows you to better separate the tests and setups while sequentially continuing from whatever state the previous test left you in:</p>
+<pre class="highlight ruby"><code><span class="n">feature</span> <span class="s1">'User creates a thing'</span> <span class="k">do</span>
+  <span class="no">Capybara</span><span class="p">.</span><span class="nf">javascript_driver</span> <span class="o">=</span> <span class="ss">:poltergeist</span>
+  <span class="no">WebMock</span><span class="p">.</span><span class="nf">disable_net_connect!</span><span class="p">(</span><span class="ss">:allow_localhost</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
 
-<p>background do
-    user_login
-  end</p>
+  <span class="n">background</span> <span class="k">do</span>
+    <span class="n">user_login</span>
+  <span class="k">end</span>
 
-<p>scenario &#39;Step 0: User signs in&rsquo; do
-    expect(page).to have_content(&#39;Signed in successfully.&rsquo;)
-  end</p>
+  <span class="n">scenario</span> <span class="s1">'Step 0: User signs in'</span> <span class="k">do</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Signed in successfully.'</span><span class="p">)</span>
+  <span class="k">end</span>
 
-<p>feature &#39;Step 1: Type&rsquo;, :js =&gt; true do
-    background do
-      visit(&rsquo;/wizard/type&rsquo;)
-    end</p>
-<pre class="highlight plaintext"><code>scenario 'it is on Step 1' do
-  expect(page).to have_content('Step 1')
-end
+  <span class="n">feature</span> <span class="s1">'Step 1: Type'</span><span class="p">,</span> <span class="ss">:js</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="k">do</span>
+    <span class="n">background</span> <span class="k">do</span>
+      <span class="n">visit</span><span class="p">(</span><span class="s1">'/wizard/type'</span><span class="p">)</span>
+    <span class="k">end</span>
 
-feature 'it selects A, continues, reaches Step 2' do
-  background do
-    find('.type-a').click
-    find('.continue').click
-  end
+    <span class="n">scenario</span> <span class="s1">'it is on Step 1'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Step 1'</span><span class="p">)</span>
+    <span class="k">end</span>
 
-  scenario 'it reaches Step 2' do
-    expect(page).to have_content('Step 2')
-  end
+    <span class="n">feature</span> <span class="s1">'it selects A, continues, reaches Step 2'</span> <span class="k">do</span>
+      <span class="n">background</span> <span class="k">do</span>
+        <span class="n">find</span><span class="p">(</span><span class="s1">'.type-a'</span><span class="p">).</span><span class="nf">click</span>
+        <span class="n">find</span><span class="p">(</span><span class="s1">'.continue'</span><span class="p">).</span><span class="nf">click</span>
+      <span class="k">end</span>
 
-  feature 'Step 2: Name', :js =&gt; true do
-    background do
-      fill_in 'name', with: 'Funeralopolis'
-      find('.continue').click
-    end
+      <span class="n">scenario</span> <span class="s1">'it reaches Step 2'</span> <span class="k">do</span>
+        <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Step 2'</span><span class="p">)</span>
+      <span class="k">end</span>
 
-    scenario 'it reaches Step 3' do
-      expect(page).to have_content('Step 3')
-    end
-  end
-end
+      <span class="n">feature</span> <span class="s1">'Step 2: Name'</span><span class="p">,</span> <span class="ss">:js</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="k">do</span>
+        <span class="n">background</span> <span class="k">do</span>
+          <span class="n">fill_in</span> <span class="s1">'name'</span><span class="p">,</span> <span class="ss">with: </span><span class="s1">'Funeralopolis'</span>
+          <span class="n">find</span><span class="p">(</span><span class="s1">'.continue'</span><span class="p">).</span><span class="nf">click</span>
+        <span class="k">end</span>
+
+        <span class="n">scenario</span> <span class="s1">'it reaches Step 3'</span> <span class="k">do</span>
+          <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Step 3'</span><span class="p">)</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
-<p>end
-end
-&rdquo;`</p>
-
     </article>
   </div>
   <footer>
