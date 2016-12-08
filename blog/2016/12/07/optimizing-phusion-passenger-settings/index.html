@@ -63,16 +63,18 @@ Requests in top-level queue : 0
     CPU: 0%      Memory  : 64M     Last used: 1h 17m
 </code></pre>
 <p>For a small Rails project running on a <a href="https://www.linode.com/">Linode</a> instance shared with another Rails application (and where I&rsquo;m running a bunch of other things, hence the more conservative coefficient of 0.5), this works out to this estimate:</p>
-<pre class="highlight plaintext"><code>max app processes  = (4096 x 0.5) / (100 * 2) = 10.24
+<pre class="highlight plaintext"><code>max app processes  = (4096 x 0.5) / 100 = 20.48
 </code></pre>
+<p>In this case, I&rsquo;m running two applications on the same server, so I could potentially adjust <a href="https://www.phusionpassenger.com/library/config/apache/reference/#passengermaxinstancesperapp">PassengerMaxInstancesPerApp</a> to control the maximum number of processes per application based on their importance.</p>
+
 <p>You can alter this setting in wherever you&rsquo;re configuring Phusion Passenger (in my case <code>/etc/apache2/apache2.conf</code>):</p>
-<pre class="highlight plaintext"><code>PassengerMaxPoolSize 10
+<pre class="highlight plaintext"><code>PassengerMaxPoolSize 20
 </code></pre>
 <p>Make sure you restart Apache (which I&rsquo;m using here to run Passenger).</p>
 
 <p>If you&rsquo;re using the standalone flavor of Passenger 5, you can commit a <code>Passengerfile.json</code> to the root folder of your Rails app:</p>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"max_pool_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+  </span><span class="s2">"max_pool_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 <p>for 4.x, the file needs to be named <code>passenger-standalone.json</code>.</p>
