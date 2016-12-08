@@ -1,7 +1,7 @@
 ---
 title: Optimizing Phusion Passenger Settings
 date: 2016-12-07 09:04 EST
-tags: Phusion Passenger, AWS, Ruby On Rails
+tags: Phusion Passenger, Ruby On Rails
 ---
 
 [Proper configuration of Phusion Passenger](https://www.phusionpassenger.com/library/config/apache/optimization/) is an aspect of optimization that frequently gets missed on production deployments of Rails / Sinatra applications. With all of the legitimate emphasis on [preventing N+1 queries](https://github.com/flyerhzm/bullet), [not instantiating objects where a pluck will do](http://collectiveidea.com/blog/archives/2015/05/29/how-to-pluck-like-a-rails-pro) and other Rails-level performance improvements, server level fine-tuning is typically ignored and inefficient default settings end up getting used.
@@ -50,8 +50,6 @@ For a small Rails project running on a [Linode](https://www.linode.com/) instanc
 max app processes  = (4096 x 0.5) / 100 = 20.48
 ```
 
-In this case, I'm running two applications on the same server, so I could potentially adjust [PassengerMaxInstancesPerApp](https://www.phusionpassenger.com/library/config/apache/reference/#passengermaxinstancesperapp) to control the maximum number of processes per application based on their importance.
-
 You can alter this setting in wherever you're configuring Phusion Passenger (in my case `/etc/apache2/apache2.conf`):
 
 ```
@@ -69,5 +67,7 @@ If you're using the standalone flavor of Passenger 5, you can commit a `Passenge
 ```
 
 for 4.x, the file needs to be named `passenger-standalone.json`.
+
+In this case, I'm running two applications on the same server so I could potentially adjust [PassengerMaxInstancesPerApp](https://www.phusionpassenger.com/library/config/apache/reference/#passengermaxinstancesperapp) to control the maximum number of processes per application based on their importance.
 
 With this simple change, you can serve more concurrent users without any additional hardware upgrades or complex refactoring.
