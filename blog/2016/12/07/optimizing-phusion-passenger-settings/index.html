@@ -25,7 +25,6 @@
       <time>Dec  7 2016</time>
       <div class="tags">
           <a href="/blog/categories/phusion-passenger/">Phusion Passenger</a>
-          <a href="/blog/categories/aws/">AWS</a>
           <a href="/blog/categories/ruby-on-rails/">Ruby On Rails</a>
       </div>
       <p><a href="https://www.phusionpassenger.com/library/config/apache/optimization/">Proper configuration of Phusion Passenger</a> is an aspect of optimization that frequently gets missed on production deployments of Rails / Sinatra applications. With all of the legitimate emphasis on <a href="https://github.com/flyerhzm/bullet">preventing N+1 queries</a>, <a href="http://collectiveidea.com/blog/archives/2015/05/29/how-to-pluck-like-a-rails-pro">not instantiating objects where a pluck will do</a> and other Rails-level performance improvements, server level fine-tuning is typically ignored and inefficient default settings end up getting used.</p>
@@ -65,8 +64,6 @@ Requests in top-level queue : 0
 <p>For a small Rails project running on a <a href="https://www.linode.com/">Linode</a> instance shared with another Rails application (and where I&rsquo;m running a bunch of other things, hence the more conservative coefficient of 0.5), this works out to this estimate:</p>
 <pre class="highlight plaintext"><code>max app processes  = (4096 x 0.5) / 100 = 20.48
 </code></pre>
-<p>In this case, I&rsquo;m running two applications on the same server, so I could potentially adjust <a href="https://www.phusionpassenger.com/library/config/apache/reference/#passengermaxinstancesperapp">PassengerMaxInstancesPerApp</a> to control the maximum number of processes per application based on their importance.</p>
-
 <p>You can alter this setting in wherever you&rsquo;re configuring Phusion Passenger (in my case <code>/etc/apache2/apache2.conf</code>):</p>
 <pre class="highlight plaintext"><code>PassengerMaxPoolSize 20
 </code></pre>
@@ -78,6 +75,8 @@ Requests in top-level queue : 0
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 <p>for 4.x, the file needs to be named <code>passenger-standalone.json</code>.</p>
+
+<p>In this case, I&rsquo;m running two applications on the same server so I could potentially adjust <a href="https://www.phusionpassenger.com/library/config/apache/reference/#passengermaxinstancesperapp">PassengerMaxInstancesPerApp</a> to control the maximum number of processes per application based on their importance.</p>
 
 <p>With this simple change, you can serve more concurrent users without any additional hardware upgrades or complex refactoring.</p>
 
