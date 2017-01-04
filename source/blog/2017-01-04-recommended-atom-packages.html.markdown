@@ -1,6 +1,6 @@
 ---
 title: Recommended Atom packages
-date: 2017-01-04 12:13 EST
+date: 2017-01-04 11:50 EST
 tags: Atom
 ---
 
