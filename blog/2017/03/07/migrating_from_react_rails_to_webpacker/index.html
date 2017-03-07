@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>Migrating from react-rails to Webpacker</title>
+
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+    <link href="/stylesheets/site.css" rel="stylesheet" />
+    <link href="/stylesheets/highlighting.css" rel="stylesheet" />
+    <script src="/javascripts/all.js"></script>
+  </head>
+
+  <div class="blog blog_2017 blog_2017_03 blog_2017_03_07 blog_2017_03_07_migrating_from_react_rails_to_webpacker blog_2017_03_07_migrating_from_react_rails_to_webpacker_index">
+    <div class="header">
+      <h1><a href='/'>tirdadc</a></h1>
+      <h2>Web Development | Ruby on Rails | React.js</h2>
+    </div>
+    <article>
+      <h3>Migrating from react-rails to Webpacker</h3>
+      <time>Mar  7 2017</time>
+      <div class="tags">
+          <a href="/blog/categories/ruby-on-rails/">Ruby On Rails</a>
+          <a href="/blog/categories/react-js/">React.js</a>
+          <a href="/blog/categories/react-rails/">react-rails</a>
+          <a href="/blog/categories/webpacker/">Webpacker</a>
+      </div>
+      <p>As an early React adopter, <a href="https://github.com/reactjs/react-rails">react-rails</a> was the obvious choice for integrating it into Ruby on Rails, and despite countless Medium posts over the years about the need to switch to <a href="https://webpack.github.io/">Webpack</a> right this minute using some <a href="https://www.google.com/search?q=rube+goldberg+machine&amp;tbm=isch">Rube Goldberg machine</a> of a setup, the additional overhead and effort rarely felt warranted on existing projects. I also had little interest in fully discarding Sprockets, because it simply works incredibly well for most things.</p>
+
+<p>This did present some challenges every now and then when trying to integrate external React components, as they tend to be written with the larger general JavaScript ecosystem in mind (Webpack, Browserify, etc&hellip;) and there wasn&rsquo;t always a way to include them with <strong>react-rails</strong> without some rewrites.</p>
+
+<p>With <a href="http://weblog.rubyonrails.org/2017/2/23/Rails-5-1-beta1/">Rails 5.1 around the corner</a> and the <a href="https://twitter.com/dhh/status/808348184481124352?lang=en">announcement that it will have native support for both Webpack and Yarn</a> thanks to <a href="https://github.com/rails/webpacker">Webpacker</a>, it finally makes sense to move things over and to also start using Webpack to manage JS dependencies without losing the benefits of Sprockets for any existing stuff.</p>
+
+<p>Here&rsquo;s a recap of what the steps are for this process:</p>
+
+<p>Add the following gems to your <code>Gemfile</code> and run <code>bundle install</code>.</p>
+<pre class="highlight diff"><code><span class="gi">+gem 'webpacker', github: 'rails/webpacker'
++gem 'webpacker-react', "0.1.0"
+</span></code></pre>
+<p>Run this Webpacker command to easily add React:</p>
+<pre class="highlight plaintext"><code>rails webpacker:install:react
+</code></pre>
+<p>In development mode, you will now need to have the Webpack watcher running in a separate process to recompile your JS/JSX on the fly.</p>
+<pre class="highlight plaintext"><code>./bin/webpack-watcher
+</code></pre>
+<p>Configure the <code>.babelrc</code> file if needed (I added stage 0 support):</p>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"presets"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"env"</span><span class="p">,</span><span class="w"> </span><span class="s2">"react"</span><span class="p">,</span><span class="w"> </span><span class="s2">"stage-0"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+<p>Remove your <strong>react-rails</strong> related <code>require</code> statements from <code>app/assets/javascripts/application.js</code> and delete <code>app/assets/javascripts/components.js</code>. While you&rsquo;re at it, clean up your <code>config/environments</code> files to remove the config settings for <strong>react-rails</strong>.</p>
+
+<p>Move your React components to <code>app/javascript/components/</code>.</p>
+
+<p>I didn&rsquo;t feel like renaming the <code>.js.jsx</code> extension so I made sure that Webpack would still parse them by editing <code>config/webpack/shared.js</code>:</p>
+<pre class="highlight javascript"><code><span class="p">...</span>
+
+<span class="nl">resolve</span><span class="p">:</span> <span class="p">{</span>
+  <span class="nl">extensions</span><span class="p">:</span> <span class="p">[</span><span class="s1">'.js'</span><span class="p">,</span> <span class="s1">'.jsx'</span><span class="p">,</span> <span class="s1">'.js.jsx'</span><span class="p">,</span> <span class="s1">'.coffee'</span><span class="p">],</span>
+  <span class="nx">modules</span><span class="p">:</span> <span class="p">[</span>
+    <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'app/javascript'</span><span class="p">),</span>
+    <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'node_modules'</span><span class="p">)</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="p">...</span>
+</code></pre>
+<p>Rewrite your components to include proper <code>import</code> and <code>export</code> declarations:</p>
+<pre class="highlight diff"><code><span class="gi">+import React from 'react'
+</span>class TextField extends React.Component {
+  // your component code
+}
+<span class="gi">+export default TextField;
+</span></code></pre>
+<p>Keep in mind that you will have to <code>import</code> child components that you&rsquo;re using in any given component.</p>
+
+<p>If you&rsquo;re using the <a href="https://facebook.github.io/react/docs/update.html">immutability helpers</a> anywhere, be sure to add:</p>
+<pre class="highlight diff"><code><span class="gi">+import update from 'react-addons-update'
+</span></code></pre>
+<p>I would recommend reading <a href="https://github.com/rails/webpacker">Webpacker&rsquo;s README</a> at this point to familiarize yourself with the notion of packs and how to include them in Rails. You will have to add a line to include the appropriate root component in your layout view:</p>
+<pre class="highlight diff"><code>&lt;%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %&gt;
+&lt;%= javascript_include_tag 'vendor', 'data-turbolinks-track': 'reload' %&gt;
+&lt;%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %&gt;
+<span class="gi">+&lt;%= javascript_pack_tag 'media_planner' %&gt;
+</span></code></pre>
+<p>This is what my pack file looks like:</p>
+<pre class="highlight javascript"><code><span class="kr">import</span> <span class="nx">RootComponent</span> <span class="nx">from</span> <span class="s1">'components/test/root_component'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">WebpackerReact</span> <span class="nx">from</span> <span class="s1">'webpacker-react'</span><span class="p">;</span>
+
+<span class="nx">WebpackerReact</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="nx">RootComponent</span><span class="p">);</span>
+</code></pre>
+<p>Using <a href="https://github.com/renchap/webpacker-react">Webpacker::React</a> allows me to still have a <code>react_component</code> view helper, although there&rsquo;s no support for pre-rendering yet. At some point I may just move to using the regular DOM mounting and skip this helper altogether.</p>
+
+<p>And finally, don&rsquo;t forget to add a compilation step to your production deployment script:</p>
+<pre class="highlight plaintext"><code>rails webpacker:compile
+</code></pre>
+    </article>
+  </div>
+  <footer>
+  <div>© 2017 Tirdad C.</div>
+  <div>
+    <a href="/about/">About</a> |
+    <a href="http://stackoverflow.com/users/3102766/tirdadc">Stack Overflow</a> |
+    <a href="https://github.com/tirdadc">GitHub</a>
+  </div>
+</footer>
+
+</html>
