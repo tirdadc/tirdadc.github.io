@@ -83,7 +83,7 @@ I would recommend reading [Webpacker's README](https://github.com/rails/webpacke
 <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 <%= javascript_include_tag 'vendor', 'data-turbolinks-track': 'reload' %>
 <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-+<%= javascript_pack_tag 'media_planner' %>
++<%= javascript_pack_tag 'my_pack' %>
 ```
 
 This is what my pack file looks like:
