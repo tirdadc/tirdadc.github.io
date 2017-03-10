@@ -95,8 +95,27 @@
 </code></pre>
 <p>Using <a href="https://github.com/renchap/webpacker-react">Webpacker::React</a> allows me to still have a <code>react_component</code> view helper, although there&rsquo;s no support for pre-rendering yet. At some point I may just move to using the regular DOM mounting and skip this helper altogether.</p>
 
-<p>And finally, don&rsquo;t forget to add a compilation step to your production deployment script:</p>
-<pre class="highlight plaintext"><code>rails webpacker:compile
+<p>If you do plan to use it, you will need to edit <code>config/webpack/production.js</code> to not mangle your registered components <a href="https://github.com/renchap/webpacker-react/issues/23">until version 0.2 ships</a> during the compilation step:</p>
+<pre class="highlight javascript"><code><span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">optimize</span><span class="p">.</span><span class="nx">UglifyJsPlugin</span><span class="p">({</span>
+  <span class="na">mangle</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">except</span><span class="p">:</span> <span class="p">[</span><span class="s1">'RootComponent'</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}),</span>
+</code></pre>
+<h3>Production</h3>
+
+<p>You will need to make sure <a href="https://yarnpkg.com/en/">Yarn</a> is installed on your production environment:</p>
+<pre class="highlight plaintext"><code>curl https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
+yum install -y yarn
+</code></pre>
+<p>I also had to add this at the top of my <code>config/webpack/shared.js</code>:</p>
+<pre class="highlight javascript"><code><span class="s1">'use strict'</span><span class="p">;</span>
+</code></pre>
+<p>You&rsquo;ll also need to install your packages:</p>
+<pre class="highlight plaintext"><code>yarn install --production
+</code></pre>
+<p>Don’t forget to add a final compilation step to your production deployment script:</p>
+<pre class="highlight plaintext"><code>RAILS_ENV=production rails webpacker:compile
 </code></pre>
     </article>
   </div>
