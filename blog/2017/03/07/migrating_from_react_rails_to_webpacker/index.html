@@ -104,17 +104,17 @@
 </code></pre>
 <h3>Production</h3>
 
-<p>You will need to make sure <a href="https://yarnpkg.com/en/">Yarn</a> is installed on your production environment:</p>
+<p>Install <a href="https://yarnpkg.com/en/">Yarn</a>:</p>
 <pre class="highlight plaintext"><code>curl https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
 yum install -y yarn
 </code></pre>
 <p>I also had to add this at the top of my <code>config/webpack/shared.js</code>:</p>
 <pre class="highlight javascript"><code><span class="s1">'use strict'</span><span class="p">;</span>
 </code></pre>
-<p>You&rsquo;ll also need to install your packages:</p>
+<p>Install your packages:</p>
 <pre class="highlight plaintext"><code>yarn install --production
 </code></pre>
-<p>Don’t forget to add a final compilation step to your production deployment script:</p>
+<p>Compile your packs (this will generate files with digests):</p>
 <pre class="highlight plaintext"><code>RAILS_ENV=production rails webpacker:compile
 </code></pre>
     </article>
