@@ -97,8 +97,39 @@ WebpackerReact.register(RootComponent);
 
 Using [Webpacker::React](https://github.com/renchap/webpacker-react) allows me to still have a `react_component` view helper, although there's no support for pre-rendering yet. At some point I may just move to using the regular DOM mounting and skip this helper altogether.
 
-And finally, don't forget to add a compilation step to your production deployment script:
+If you do plan to use it, you will need to edit `config/webpack/production.js` to not mangle your registered components [until version 0.2 ships](https://github.com/renchap/webpacker-react/issues/23) during the compilation step:
+
+```js
+new webpack.optimize.UglifyJsPlugin({
+  mangle: {
+    except: ['RootComponent']
+  }
+}),
+```
+
+### Production
+
+You will need to make sure [Yarn](https://yarnpkg.com/en/) is installed on your production environment:
 
 ```
-rails webpacker:compile
+curl https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
+yum install -y yarn
+```
+
+I also had to add this at the top of my `config/webpack/shared.js`:
+
+```js
+'use strict';
+```
+
+You'll also need to install your packages:
+
+```
+yarn install --production
+```
+
+Don’t forget to add a final compilation step to your production deployment script:
+
+```
+RAILS_ENV=production rails webpacker:compile
 ```
