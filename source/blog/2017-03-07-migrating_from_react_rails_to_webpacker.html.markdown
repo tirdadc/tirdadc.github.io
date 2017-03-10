@@ -109,7 +109,7 @@ new webpack.optimize.UglifyJsPlugin({
 
 ### Production
 
-You will need to make sure [Yarn](https://yarnpkg.com/en/) is installed on your production environment:
+Install [Yarn](https://yarnpkg.com/en/):
 
 ```
 curl https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
@@ -122,13 +122,13 @@ I also had to add this at the top of my `config/webpack/shared.js`:
 'use strict';
 ```
 
-You'll also need to install your packages:
+Install your packages:
 
 ```
 yarn install --production
 ```
 
-Don’t forget to add a final compilation step to your production deployment script:
+Compile your packs (this will generate files with digests):
 
 ```
 RAILS_ENV=production rails webpacker:compile
