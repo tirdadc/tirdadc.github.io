@@ -91,17 +91,10 @@
 <pre class="highlight javascript"><code><span class="kr">import</span> <span class="nx">RootComponent</span> <span class="nx">from</span> <span class="s1">'components/test/root_component'</span><span class="p">;</span>
 <span class="kr">import</span> <span class="nx">WebpackerReact</span> <span class="nx">from</span> <span class="s1">'webpacker-react'</span><span class="p">;</span>
 
-<span class="nx">WebpackerReact</span><span class="p">.</span><span class="nx">register</span><span class="p">(</span><span class="nx">RootComponent</span><span class="p">);</span>
+<span class="nx">WebpackerReact</span><span class="p">.</span><span class="nx">setup</span><span class="p">({</span><span class="nx">RootComponent</span><span class="p">});</span>
 </code></pre>
 <p>Using <a href="https://github.com/renchap/webpacker-react">Webpacker::React</a> allows me to still have a <code>react_component</code> view helper, although there&rsquo;s no support for pre-rendering yet. At some point I may just move to using the regular DOM mounting and skip this helper altogether.</p>
 
-<p>If you do plan to use it, you will need to edit <code>config/webpack/production.js</code> to not mangle your registered components <a href="https://github.com/renchap/webpacker-react/issues/23">until version 0.2 ships</a> during the compilation step:</p>
-<pre class="highlight javascript"><code><span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">optimize</span><span class="p">.</span><span class="nx">UglifyJsPlugin</span><span class="p">({</span>
-  <span class="na">mangle</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">except</span><span class="p">:</span> <span class="p">[</span><span class="s1">'RootComponent'</span><span class="p">]</span>
-  <span class="p">}</span>
-<span class="p">}),</span>
-</code></pre>
 <h3>Production</h3>
 
 <p>Install <a href="https://yarnpkg.com/en/">Yarn</a>:</p>
