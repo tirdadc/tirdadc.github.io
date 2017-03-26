@@ -92,20 +92,10 @@ This is what my pack file looks like:
 import RootComponent from 'components/test/root_component';
 import WebpackerReact from 'webpacker-react';
 
-WebpackerReact.register(RootComponent);
+WebpackerReact.setup({RootComponent});
 ```
 
 Using [Webpacker::React](https://github.com/renchap/webpacker-react) allows me to still have a `react_component` view helper, although there's no support for pre-rendering yet. At some point I may just move to using the regular DOM mounting and skip this helper altogether.
-
-If you do plan to use it, you will need to edit `config/webpack/production.js` to not mangle your registered components [until version 0.2 ships](https://github.com/renchap/webpacker-react/issues/23) during the compilation step:
-
-```js
-new webpack.optimize.UglifyJsPlugin({
-  mangle: {
-    except: ['RootComponent']
-  }
-}),
-```
 
 ### Production
 
