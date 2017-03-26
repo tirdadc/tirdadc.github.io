@@ -16,7 +16,7 @@ Add the following gems to your `Gemfile` and run `bundle install`.
 
 ```diff
 +gem 'webpacker', github: 'rails/webpacker'
-+gem 'webpacker-react', "0.1.0"
++gem 'webpacker-react'
 ```
 
 Run this Webpacker command to easily add React:
