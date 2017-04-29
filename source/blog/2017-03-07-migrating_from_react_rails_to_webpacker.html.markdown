@@ -123,3 +123,7 @@ Compile your packs (this will generate files with digests):
 ```
 RAILS_ENV=production rails webpacker:compile
 ```
+
+### Update (April 29, 2017)
+
+this was written before **react-rails** added [support for Webpacker](https://github.com/reactjs/react-rails#use-with-webpacker). You can decide to use this process to rely on Webpacker to handle everything but still keep **react-rails** for its `react_component` view helper, saving you the need to use Webpacker::React.
