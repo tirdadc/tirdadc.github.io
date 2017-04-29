@@ -110,6 +110,10 @@ yum install -y yarn
 <p>Compile your packs (this will generate files with digests):</p>
 <pre class="highlight plaintext"><code>RAILS_ENV=production rails webpacker:compile
 </code></pre>
+<h3>Update (April 29, 2017)</h3>
+
+<p>this was written before <strong>react-rails</strong> added <a href="https://github.com/reactjs/react-rails#use-with-webpacker">support for Webpacker</a>. You can decide to use this process to rely on Webpacker to handle everything but still keep <strong>react-rails</strong> for its <code>react_component</code> view helper, saving you the need to use Webpacker::React.</p>
+
     </article>
   </div>
   <footer>
