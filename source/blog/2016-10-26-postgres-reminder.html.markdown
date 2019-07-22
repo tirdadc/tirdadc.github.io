@@ -30,6 +30,12 @@ To restore a database:
 psql db_name < infile.sql
 ```
 
+To create a user:
+
+``` sql
+CREATE USER johndoe WITH ENCRYPTED PASSWORD 'some_password';
+```
+
 To grant all privileges to a user:
 
 ``` sql
@@ -40,12 +46,6 @@ log in as admin :
 
 ``` sql
 psql -U postgres
-```
-
-change owner of database:
-
-``` sql
-ALTER DATABASE name OWNER TO new_owner;
 ```
 
 Change a user's password:
