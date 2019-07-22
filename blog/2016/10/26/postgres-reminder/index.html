@@ -41,14 +41,14 @@
 <p>To restore a database:</p>
 <pre class="highlight sql"><code><span class="n">psql</span> <span class="n">db_name</span> <span class="o">&lt;</span> <span class="n">infile</span><span class="p">.</span><span class="k">sql</span>
 </code></pre>
+<p>To create a user:</p>
+<pre class="highlight sql"><code><span class="k">CREATE</span> <span class="k">USER</span> <span class="n">johndoe</span> <span class="k">WITH</span> <span class="k">ENCRYPTED</span> <span class="n">PASSWORD</span> <span class="s1">'some_password'</span><span class="p">;</span>
+</code></pre>
 <p>To grant all privileges to a user:</p>
 <pre class="highlight sql"><code><span class="k">GRANT</span> <span class="k">ALL</span> <span class="k">PRIVILEGES</span> <span class="k">ON</span> <span class="k">DATABASE</span> <span class="n">db_name</span> <span class="k">TO</span> <span class="n">db_user</span><span class="p">;</span>
 </code></pre>
 <p>log in as admin :</p>
 <pre class="highlight sql"><code><span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">postgres</span>
-</code></pre>
-<p>change owner of database:</p>
-<pre class="highlight sql"><code><span class="k">ALTER</span> <span class="k">DATABASE</span> <span class="n">name</span> <span class="k">OWNER</span> <span class="k">TO</span> <span class="n">new_owner</span><span class="p">;</span>
 </code></pre>
 <p>Change a user&rsquo;s password:</p>
 <pre class="highlight sql"><code><span class="k">ALTER</span> <span class="k">USER</span> <span class="nv">"user_name"</span> <span class="k">WITH</span> <span class="n">PASSWORD</span> <span class="s1">'new_password'</span><span class="p">;</span>
@@ -65,7 +65,7 @@
     </article>
   </div>
   <footer>
-  <div>© 2017 Tirdad C.</div>
+  <div>© 2019 Tirdad C.</div>
   <div>
     <a href="/about/">About</a> |
     <a href="http://stackoverflow.com/users/3102766/tirdadc">Stack Overflow</a> |
