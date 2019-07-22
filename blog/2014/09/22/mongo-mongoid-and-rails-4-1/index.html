@@ -15,7 +15,7 @@
     <script src="/javascripts/all.js"></script>
   </head>
 
-  <div class="blog blog_2014 blog_2014_09 blog_2014_09_22 blog_2014_09_22_mongo-mongoid-and-rails-4">
+  <div class="blog blog_2014 blog_2014_09 blog_2014_09_22 blog_2014_09_22_mongo-mongoid-and-rails-4-1 blog_2014_09_22_mongo-mongoid-and-rails-4-1_index">
     <div class="header">
       <h1><a href='/'>tirdadc</a></h1>
       <h2>Web Development | Ruby on Rails | React.js</h2>
@@ -43,20 +43,20 @@ created Rails 4.1 project.</p>
 <li><p>Delete <code>database.yml</code></p></li>
 <li><p>Remove any lines that reference active_record from your environment files:</p></li>
 </ol>
-<pre class="highlight ruby"><code><span class="c1"># development.rb</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># development.rb</span>
 <span class="n">config</span><span class="p">.</span><span class="nf">active_record</span><span class="p">.</span><span class="nf">migration_error</span> <span class="o">=</span> <span class="ss">:page_load</span>
 
 <span class="c1"># production.rb</span>
 <span class="n">config</span><span class="p">.</span><span class="nf">active_record</span><span class="p">.</span><span class="nf">dump_schema_after_migration</span> <span class="o">=</span> <span class="kp">false</span>
-</code></pre>
+</code></pre></div>
 <p><span>6.</span> Change this in your <code>application.rb</code>:</p>
-<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'rails/all'</span>
-</code></pre>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'rails/all'</span>
+</code></pre></div>
 <p>to:</p>
-<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s2">"action_controller/railtie"</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s2">"action_controller/railtie"</span>
 <span class="nb">require</span> <span class="s2">"action_mailer/railtie"</span>
 <span class="nb">require</span> <span class="s2">"sprockets/railtie"</span>
-</code></pre>
+</code></pre></div>
     </article>
   </div>
   <footer>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>Using Retina images in Ruby on Rails without gems or libraries</title>
+
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+    <link href="/stylesheets/site.css" rel="stylesheet" />
+    <link href="/stylesheets/highlighting.css" rel="stylesheet" />
+    <script src="/javascripts/all.js"></script>
+  </head>
+
+  <div class="blog blog_2019 blog_2019_02 blog_2019_02_26 blog_2019_02_26_using-retina-images-in-ruby-on-rails-without-gems-or-libraries blog_2019_02_26_using-retina-images-in-ruby-on-rails-without-gems-or-libraries_index">
+    <div class="header">
+      <h1><a href='/'>tirdadc</a></h1>
+      <h2>Web Development | Ruby on Rails | React.js</h2>
+    </div>
+    <article>
+      <h3>Using Retina images in Ruby on Rails without gems or libraries</h3>
+      <time>Feb 26 2019</time>
+      <div class="tags">
+          <a href="/blog/categories/ruby-on-rails/">Ruby On Rails</a>
+          <a href="/blog/categories/retina/">Retina</a>
+      </div>
+      <p>A long time ago I set up <a href="https://github.com/strues/retinajs">retina.js</a> on one of my sites to provide Retina quality image assets when needed to the relevant devices. Like many external JavaScript plugins, it didn&rsquo;t necessarily play nicely with Turbolinks and I later noticed erratic issues where certain assets were not being swapped out as expected.</p>
+
+<p>Thankfully <a href="https://caniuse.com/#feat=srcset">browser support</a> for the <code>srcset</code> image attribute has considerably improved and there&rsquo;s no real need for such a library or an additional gem to handle multiple variants of the same image asset and let the browser do the rest. The markup you&rsquo;re aiming for should look like this:</p>
+<div class="highlight"><pre class="highlight html"><code><span class="nt">&lt;img</span>
+  <span class="na">alt=</span><span class="s">"Nostromo"</span>
+  <span class="na">title=</span><span class="s">"Nostromo"</span>
+  <span class="na">src=</span><span class="s">"/system/releases/images/000/000/920/thumb/nostromo.jpg"</span>
+  <span class="na">srcset=</span><span class="s">"/system/releases/images/000/000/920/thumb_2x/nostromo.jpg 2x"</span>
+  <span class="na">class=</span><span class="s">"th"</span> <span class="nt">/&gt;</span>
+</code></pre></div>
+<p>Rails 5.2.1 now provides <a href="https://github.com/rails/rails/commit/43efae22a7a59d5fe0be599bd074c5e7d881266a#diff-d36c3bf0d0a61b0b5dbae953a4852ad2">support</a> for directly setting the srcset attribute through <code>image_tag</code>. The example below uses Paperclip, but the premise remains the same for Carrierwave:</p>
+<div class="highlight"><pre class="highlight erb"><code><span class="cp">&lt;%=</span> <span class="n">image_tag</span><span class="p">(</span>
+      <span class="n">item</span><span class="p">.</span><span class="nf">image</span><span class="p">.</span><span class="nf">url</span><span class="p">(</span><span class="ss">:thumb</span><span class="p">),</span>
+      <span class="ss">alt: </span><span class="s2">"</span><span class="si">#{</span><span class="n">item</span><span class="p">.</span><span class="nf">title</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+      <span class="ss">title: </span><span class="s2">"</span><span class="si">#{</span><span class="n">item</span><span class="p">.</span><span class="nf">title</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+      <span class="ss">class: </span><span class="s2">"th"</span><span class="p">,</span>
+      <span class="ss">srcset: </span><span class="p">{</span> <span class="n">item</span><span class="p">.</span><span class="nf">image</span><span class="p">.</span><span class="nf">url</span><span class="p">(</span><span class="ss">:thumb_2x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="s1">'2x'</span> <span class="p">}</span> <span class="p">)</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+<p>If you&rsquo;re on an older version of Rails, this will work:</p>
+<div class="highlight"><pre class="highlight erb"><code><span class="cp">&lt;%=</span> <span class="n">image_tag</span><span class="p">(</span>
+      <span class="n">item</span><span class="p">.</span><span class="nf">image</span><span class="p">.</span><span class="nf">url</span><span class="p">(</span><span class="ss">:thumb</span><span class="p">),</span>
+      <span class="ss">alt: </span><span class="s2">"</span><span class="si">#{</span><span class="n">item</span><span class="p">.</span><span class="nf">title</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+      <span class="ss">title: </span><span class="s2">"</span><span class="si">#{</span><span class="n">item</span><span class="p">.</span><span class="nf">title</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+      <span class="ss">class: </span><span class="s2">"th"</span><span class="p">,</span>
+      <span class="ss">srcset: </span><span class="s2">"</span><span class="si">#{</span><span class="n">item</span><span class="p">.</span><span class="nf">image</span><span class="p">.</span><span class="nf">url</span><span class="p">(</span><span class="ss">:thumb_2x</span><span class="p">)</span><span class="si">}</span><span class="s2"> 2x"</span> <span class="p">)</span> <span class="cp">%&gt;</span>
+</code></pre></div>
+<p>Here&rsquo;s an example of the same image being provided with a 2x variant that shows how much of a difference this makes. You&rsquo;ll obviously need to be on a device that supports Retina display to see it.</p>
+
+<div style='text-align: center;'>
+      <img src="/images/nostromo_1x.jpg" alt="Nostromo 1x" width='400px'>
+      <img src="/images/nostromo_1x.jpg" srcset="/images/nostromo_2x.jpg" alt="Nostromo 2x" width='400px' />
+</div>
+
+    </article>
+  </div>
+  <footer>
+  <div>© 2019 Tirdad C.</div>
+  <div>
+    <a href="/about/">About</a> |
+    <a href="http://stackoverflow.com/users/3102766/tirdadc">Stack Overflow</a> |
+    <a href="https://github.com/tirdadc">GitHub</a>
+  </div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-93236121-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+</footer>
+
+</html>

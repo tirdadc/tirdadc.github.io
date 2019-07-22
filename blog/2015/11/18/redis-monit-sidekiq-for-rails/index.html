@@ -35,46 +35,46 @@
 <p><a href="https://mmonit.com/monit/">Monit</a> is a small Open Source utility for managing and monitoring Unix systems. We&rsquo;re going to use it to insure that Redis is always running, and restarted if the process goes down or the server gets rebooted.</p>
 
 <h2>Install Monit</h2>
-<pre class="highlight plaintext"><code>$ sudo apt-get install monit
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>$ sudo apt-get install monit
+</code></pre></div>
 <h2>Configure Monit</h2>
 
 <p>Your main monit configuration file will be in <code>/etc/monit/monitrc</code>, and you&rsquo;re going to add a <code>redis.conf</code> file under <code>/etc/monit/conf.d/</code>.</p>
-<pre class="highlight plaintext"><code># /etc/monit/conf.d/redis.conf
+<div class="highlight"><pre class="highlight plaintext"><code># /etc/monit/conf.d/redis.conf
 check process redis-server with pidfile "/var/run/redis/redis-server.pid"
   start program = "/usr/local/bin/redis-server /etc/redis/redis.conf"
   stop program = "/usr/local/bin/redis-cli shutdown"
   if failed host 127.0.0.1 port 6379 then restart
   if 5 restarts within 5 cycles then timeout
-</code></pre>
+</code></pre></div>
 <h1>Redis 3.0.5</h1>
 
 <p><a href="http://redis.io/topics/quickstart">Installing Redis</a> is pretty simple but you need to build it on Ubuntu to get the latest version:</p>
-<pre class="highlight plaintext"><code>$ wget http://download.redis.io/releases/redis-3.0.5.tar.gz
+<div class="highlight"><pre class="highlight plaintext"><code>$ wget http://download.redis.io/releases/redis-3.0.5.tar.gz
 $ tar xzf redis-3.0.5.tar.gz
 $ cd redis-3.0.5
 $ make
-</code></pre>
+</code></pre></div>
 <p>you can also run <code>make test</code> to verify that everything checks out.</p>
 
 <p>Once that is done, copy the files to <code>/usr/local/bin</code> and make sure you copy the new redis.conf to its appropriate location:</p>
-<pre class="highlight plaintext"><code>$ sudo cp src/redis-server /usr/local/bin/
+<div class="highlight"><pre class="highlight plaintext"><code>$ sudo cp src/redis-server /usr/local/bin/
 $ sudo cp src/redis-cli /usr/local/bin/
 $ sudo cp redis.conf /etc/redis/redis.conf
-</code></pre>
+</code></pre></div>
 <p>redis-cli is the command line tool, redis-server is what we&rsquo;ll be starting with Monit.</p>
 
 <h1>Tying them together</h1>
 
 <p>You want monit to reload the configuration changes and to restart the redis-server:</p>
-<pre class="highlight plaintext"><code>$ sudo monit reload
+<div class="highlight"><pre class="highlight plaintext"><code>$ sudo monit reload
 $ sudo monit restart redis-server
-</code></pre>
+</code></pre></div>
 <p>You can see the output of the monit log at <code>/var/log/monit.log</code> to make sure everything is OK, or you can also use:</p>
-<pre class="highlight plaintext"><code>$ sudo monit status
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>$ sudo monit status
+</code></pre></div>
 <p>I noticed these warnings:</p>
-<pre class="highlight plaintext"><code>15377:M 18 Nov 12:29:31.725 # You requested maxclients of 10000 requiring at least 10032 max file descriptors.
+<div class="highlight"><pre class="highlight plaintext"><code>15377:M 18 Nov 12:29:31.725 # You requested maxclients of 10000 requiring at least 10032 max file descriptors.
 15377:M 18 Nov 12:29:31.725 # Redis can't set maximum open files to 10032 because of OS error: Operation not permitted.
 15377:M 18 Nov 12:29:31.725 # Current maximum open files is 4096. maxclients has been reduced to 4064 to compensate for low ulimit. If you need higher maxclients increase 'ulimit -n'.
 15377:M 18 Nov 12:29:31.726 # Warning: 32 bit instance detected but no memory limit set. Setting 3 GB maxmemory limit with 'noeviction' policy now.
@@ -99,16 +99,16 @@ $ sudo monit restart redis-server
 15377:M 18 Nov 12:29:31.726 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
 15377:M 18 Nov 12:29:31.727 # Server started, Redis version 3.0.5
 15377:M 18 Nov 12:29:31.727 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
-</code></pre>
+</code></pre></div>
 <p>To fix these warnings:</p>
-<pre class="highlight plaintext"><code>$ sudo sysctl -w net.core.somaxconn=65535
+<div class="highlight"><pre class="highlight plaintext"><code>$ sudo sysctl -w net.core.somaxconn=65535
 $ sudo sysctl -w vm.overcommit_memory=1
 $ sudo sh -c "ulimit -n 10032 &amp;&amp; exec su $LOGNAME"
-</code></pre>
+</code></pre></div>
 <p>and edit your /etc/redis/redis.conf to set the following:</p>
-<pre class="highlight plaintext"><code>maxmemory 2mb
+<div class="highlight"><pre class="highlight plaintext"><code>maxmemory 2mb
 maxmemory-policy allkeys-lru
-</code></pre>
+</code></pre></div>
     </article>
   </div>
   <footer>

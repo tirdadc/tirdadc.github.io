@@ -30,7 +30,7 @@
           <a href="/blog/categories/testing/">testing</a>
       </div>
       <p>I recently wrote some automated user acceptance tests with <a href="https://github.com/jnicklas/capybara">Capybara</a> for a multi-step wizard, and the initial approach didn&rsquo;t seem very DRY. I was rehashing the steps involved in previous scenarios to reach whatever step was currently being tested, and I was combining multiple expectations at various steps:</p>
-<pre class="highlight ruby"><code><span class="n">feature</span> <span class="s1">'User creates a thing'</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">feature</span> <span class="s1">'User creates a thing'</span> <span class="k">do</span>
   <span class="no">Capybara</span><span class="p">.</span><span class="nf">javascript_driver</span> <span class="o">=</span> <span class="ss">:poltergeist</span>
   <span class="no">WebMock</span><span class="p">.</span><span class="nf">disable_net_connect!</span><span class="p">(</span><span class="ss">:allow_localhost</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
 
@@ -61,9 +61,9 @@
     <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Step 3'</span><span class="p">)</span>
     <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>Thankfully you can <a href="https://github.com/jnicklas/capybara/commit/61524b0fd32a1fb55b82853bdc4a0293e9fcdef0">nest features since the 2.2.1 version</a>, which allows you to better separate the tests and setups while sequentially continuing from whatever state the previous test left you in:</p>
-<pre class="highlight ruby"><code><span class="n">feature</span> <span class="s1">'User creates a thing'</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">feature</span> <span class="s1">'User creates a thing'</span> <span class="k">do</span>
   <span class="no">Capybara</span><span class="p">.</span><span class="nf">javascript_driver</span> <span class="o">=</span> <span class="ss">:poltergeist</span>
   <span class="no">WebMock</span><span class="p">.</span><span class="nf">disable_net_connect!</span><span class="p">(</span><span class="ss">:allow_localhost</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
 
@@ -107,7 +107,7 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
     </article>
   </div>
   <footer>

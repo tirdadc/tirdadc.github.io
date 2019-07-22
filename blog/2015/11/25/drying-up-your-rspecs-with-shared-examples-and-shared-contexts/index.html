@@ -37,7 +37,7 @@
 </ul>
 
 <p>Let&rsquo;s take the most naive approach and write 3 individual tests for these methods:</p>
-<pre class="highlight ruby"><code><span class="n">describe</span> <span class="s1">'#block'</span> <span class="k">do</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">describe</span> <span class="s1">'#block'</span> <span class="k">do</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">{</span> <span class="n">build</span><span class="p">(</span><span class="ss">:merchant</span><span class="p">)</span> <span class="p">}</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:billing_manager</span><span class="p">)</span> <span class="p">{</span> <span class="n">create</span><span class="p">(</span><span class="ss">:user</span><span class="p">,</span> <span class="ss">:manager</span><span class="p">,</span> <span class="ss">merchant: </span><span class="n">merchant</span><span class="p">)</span> <span class="p">}</span>
 
@@ -98,9 +98,9 @@
     <span class="p">}.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">ActionMailer</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">deliveries</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>You&rsquo;re testing the same things on all 3 methods, so you can leverage shared examples to rewrite that in a way where you don&rsquo;t repeat that. You also want to pass both the action to trigger and the new state to test as parameters to your shared example:</p>
-<pre class="highlight ruby"><code><span class="n">shared_examples_for</span> <span class="s1">'a merchant state change'</span> <span class="k">do</span> <span class="o">|</span><span class="n">action</span><span class="p">,</span> <span class="n">new_state</span><span class="o">|</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">shared_examples_for</span> <span class="s1">'a merchant state change'</span> <span class="k">do</span> <span class="o">|</span><span class="n">action</span><span class="p">,</span> <span class="n">new_state</span><span class="o">|</span>
   <span class="n">it</span> <span class="s2">"sets the merchant state to </span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">"</span> <span class="k">do</span>
     <span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
     <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">?"</span><span class="p">)).</span><span class="nf">to</span> <span class="n">be</span> <span class="kp">true</span>
@@ -146,9 +146,9 @@
 
   <span class="n">it_behaves_like</span> <span class="s1">'a merchant state change'</span><span class="p">,</span> <span class="s1">'deactivate'</span><span class="p">,</span> <span class="s1">'deactivated'</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>Now that you&rsquo;ve done that, you want to avoid repeating the setup portion for these tests. You can do that with <a href="https://www.relishapp.com/rspec/rspec-core/docs/example-groups/shared-context">shared contexts</a>:</p>
-<pre class="highlight ruby"><code><span class="n">shared_examples_for</span> <span class="s1">'a merchant state change'</span> <span class="k">do</span> <span class="o">|</span><span class="n">action</span><span class="p">,</span> <span class="n">new_state</span><span class="o">|</span>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">shared_examples_for</span> <span class="s1">'a merchant state change'</span> <span class="k">do</span> <span class="o">|</span><span class="n">action</span><span class="p">,</span> <span class="n">new_state</span><span class="o">|</span>
   <span class="n">it</span> <span class="s2">"sets the merchant state to </span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">"</span> <span class="k">do</span>
     <span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
     <span class="n">expect</span><span class="p">(</span><span class="n">merchant</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">new_state</span><span class="si">}</span><span class="s2">?"</span><span class="p">)).</span><span class="nf">to</span> <span class="n">be</span> <span class="kp">true</span>
@@ -188,7 +188,7 @@
   <span class="n">include_context</span> <span class="s1">'has a merchant and a billing manager'</span>
   <span class="n">it_behaves_like</span> <span class="s1">'a merchant state change'</span><span class="p">,</span> <span class="s1">'deactivate'</span><span class="p">,</span> <span class="s1">'deactivated'</span>
 <span class="k">end</span>
-</code></pre>
+</code></pre></div>
 <p>You&rsquo;re now down from 61 lines to 40, and it just looks less copy-paste happy. You can also move out your shared contexts to separate files and reuse them in different specs. The only immediate downside is that the line numbering is a bit less informative with shared examples compared to distinct specs.</p>
 
 <p>Like anything DRY-related, use this responsibly and don&rsquo;t create a nightmare bizarro world of obfuscated tests.</p>

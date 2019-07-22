@@ -31,69 +31,69 @@
 <h4>Gemfile changes:</h4>
 
 <p>Start off by setting the Rails version to 5 in your Gemfile:</p>
-<pre class="highlight diff"><code><span class="gd">-gem 'rails', '~&gt; 4.2.5'
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-gem 'rails', '~&gt; 4.2.5'
 </span><span class="gi">+gem 'rails', '~&gt; 5.0.0'
-</span></code></pre>
+</span></code></pre></div>
 <p>If you&rsquo;re using <a href="https://github.com/plataformatec/devise">devise</a>, switch to the github branch:</p>
-<pre class="highlight diff"><code><span class="gd">-gem 'devise'
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-gem 'devise'
 </span><span class="gi">+gem 'devise', github: 'plataformatec/devise'
-</span></code></pre>
+</span></code></pre></div>
 <p>Same with <a href="https://github.com/sinatra/sinatra">Sinatra</a>:</p>
-<pre class="highlight diff"><code><span class="gd">-gem 'sinatra', require: nil
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-gem 'sinatra', require: nil
 </span><span class="gi">+gem 'sinatra', require: nil, github: 'sinatra'
-</span></code></pre>
+</span></code></pre></div>
 <p>If you have controller specs (who doesn&rsquo;t?), you&rsquo;re going to need <a href="https://github.com/rails/rails-controller-testing">rails-controller-testing</a>.</p>
-<pre class="highlight diff"><code><span class="gi">+  gem 'rails-controller-testing'
-</span></code></pre><pre class="highlight diff"><code># spec/rails_helper.rb
+<div class="highlight"><pre class="highlight diff"><code><span class="gi">+  gem 'rails-controller-testing'
+</span></code></pre></div><div class="highlight"><pre class="highlight diff"><code># spec/rails_helper.rb
 
 <span class="gd">-  config.include Devise::TestHelpers, type: :controller
 </span><span class="gi">+  config.include Devise::Test::ControllerHelpers, type: :controller
-</span></code></pre>
+</span></code></pre></div>
 <p>If you were using <code>transactional_fixtures = true</code> and <code>test_after_commit</code>, you can now get rid of the gem:</p>
-<pre class="highlight diff"><code><span class="gd">-  gem 'test_after_commit'
-</span></code></pre>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-  gem 'test_after_commit'
+</span></code></pre></div>
 <p>If you&rsquo;re using <a href="https://github.com/evrone/quiet_assets">quiet_assets</a>, you can remove it and enable a new flag to have the same behavior:</p>
-<pre class="highlight diff"><code><span class="gd">-gem 'quiet_assets'
-</span></code></pre><pre class="highlight ruby"><code><span class="c1"># config/environments/development.rb</span>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-gem 'quiet_assets'
+</span></code></pre></div><div class="highlight"><pre class="highlight ruby"><code><span class="c1"># config/environments/development.rb</span>
 
 <span class="n">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">quiet</span> <span class="o">=</span> <span class="kp">true</span>
-</code></pre>
+</code></pre></div>
 <h4>Turbolinks</h4>
 
 <p>If you were using Turbolinks, you&rsquo;ll need to slightly alter the document event code:</p>
-<pre class="highlight javascript"><code><span class="c1">// app/assets/javascripts/users.js</span>
+<div class="highlight"><pre class="highlight javascript"><code><span class="c1">// app/assets/javascripts/users.js</span>
 <span class="kd">var</span> <span class="nx">ready</span><span class="p">;</span>
 <span class="nx">ready</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
  <span class="c1">// Your code here</span>
 <span class="p">}</span>
 <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="nx">ready</span><span class="p">);</span>
 <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">'page:load'</span><span class="p">,</span> <span class="nx">ready</span><span class="p">);</span>
-</code></pre>
+</code></pre></div>
 <p>to:</p>
-<pre class="highlight javascript"><code><span class="kd">var</span> <span class="nx">ready</span><span class="p">;</span>
+<div class="highlight"><pre class="highlight javascript"><code><span class="kd">var</span> <span class="nx">ready</span><span class="p">;</span>
 <span class="nx">ready</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
  <span class="c1">// Your code here</span>
 <span class="p">}</span>
 <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">ready</span><span class="p">(</span><span class="nx">ready</span><span class="p">);</span>
 <span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">'turbolinks:load'</span><span class="p">,</span> <span class="nx">ready</span><span class="p">);</span>
-</code></pre>
+</code></pre></div>
 <p>The progress bar is enabled by default, so you can remove this:</p>
-<pre class="highlight diff"><code><span class="gd">-Turbolinks.enableProgressBar();
-</span></code></pre>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-Turbolinks.enableProgressBar();
+</span></code></pre></div>
 <p><a href="https://github.com/turbolinks/turbolinks">Turbolinks 5</a> is a completely different beast, so take some time to read up on it.</p>
 
 <h4>Specs</h4>
 
 <p>Fix some deprecation notices thrown during tests:</p>
-<pre class="highlight diff"><code># config/environments/test.rb
+<div class="highlight"><pre class="highlight diff"><code># config/environments/test.rb
 
 <span class="gd">-  config.serve_static_files  = true
 -  config.static_cache_control = 'public, max-age=3600'
 </span><span class="gi">+  config.public_file_server.enabled = true
 +  config.public_file_server.headers = { 'Cache-Control' =&gt; 'public, max-age=3600' }
-</span></code></pre>
+</span></code></pre></div>
 <p>You&rsquo;ll need to explicitly state params as a hash:</p>
-<pre class="highlight diff"><code>describe "GET edit" do
+<div class="highlight"><pre class="highlight diff"><code>describe "GET edit" do
   it "assigns the requested user as @user" do
     user = User.create! valid_attributes
 <span class="gd">-     get :edit, id: user.to_param
@@ -101,7 +101,7 @@
 </span>    expect(assigns(:user)).to eq(user)
   end
 end
-</code></pre>
+</code></pre></div>
     </article>
   </div>
   <footer>

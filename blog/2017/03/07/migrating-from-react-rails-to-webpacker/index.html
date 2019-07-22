@@ -15,7 +15,7 @@
     <script src="/javascripts/all.js"></script>
   </head>
 
-  <div class="blog blog_2017 blog_2017_03 blog_2017_03_07 blog_2017_03_07_migrating_from_react_rails_to_webpacker blog_2017_03_07_migrating_from_react_rails_to_webpacker_index">
+  <div class="blog blog_2017 blog_2017_03 blog_2017_03_07 blog_2017_03_07_migrating-from-react-rails-to-webpacker blog_2017_03_07_migrating-from-react-rails-to-webpacker_index">
     <div class="header">
       <h1><a href='/'>tirdadc</a></h1>
       <h2>Web Development | Ruby on Rails | React.js</h2>
@@ -38,28 +38,28 @@
 <p>Here&rsquo;s a recap of what the steps are for this process:</p>
 
 <p>Add the following gems to your <code>Gemfile</code> and run <code>bundle install</code>.</p>
-<pre class="highlight diff"><code><span class="gi">+gem 'webpacker', github: 'rails/webpacker'
+<div class="highlight"><pre class="highlight diff"><code><span class="gi">+gem 'webpacker', github: 'rails/webpacker'
 +gem 'webpacker-react'
-</span></code></pre>
+</span></code></pre></div>
 <p>Run this Webpacker command to easily add React:</p>
-<pre class="highlight plaintext"><code>rails webpacker:install:react
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>rails webpacker:install:react
+</code></pre></div>
 <p>In development mode, you will now need to have the Webpack watcher running in a separate process to recompile your JS/JSX on the fly.</p>
-<pre class="highlight plaintext"><code>./bin/webpack-watcher
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>./bin/webpack-watcher
+</code></pre></div>
 <p>Configure the <code>.babelrc</code> file if needed (I added stage 0 support):</p>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
+<div class="highlight"><pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="s2">"presets"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"env"</span><span class="p">,</span><span class="w"> </span><span class="s2">"react"</span><span class="p">,</span><span class="w"> </span><span class="s2">"stage-0"</span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
+</span></code></pre></div>
 <p>Remove your <strong>react-rails</strong> related <code>require</code> statements from <code>app/assets/javascripts/application.js</code> and delete <code>app/assets/javascripts/components.js</code>. While you&rsquo;re at it, clean up your <code>config/environments</code> files to remove the config settings for <strong>react-rails</strong>.</p>
 
 <p>Move your React components to <code>app/javascript/components/</code>.</p>
 
 <p>I didn&rsquo;t feel like renaming the <code>.js.jsx</code> extension so I made sure that Webpack would still parse them by editing <code>config/webpack/shared.js</code>:</p>
-<pre class="highlight javascript"><code><span class="p">...</span>
+<div class="highlight"><pre class="highlight javascript"><code><span class="p">...</span>
 
-<span class="nl">resolve</span><span class="p">:</span> <span class="p">{</span>
+<span class="nx">resolve</span><span class="p">:</span> <span class="p">{</span>
   <span class="nl">extensions</span><span class="p">:</span> <span class="p">[</span><span class="s1">'.js'</span><span class="p">,</span> <span class="s1">'.jsx'</span><span class="p">,</span> <span class="s1">'.js.jsx'</span><span class="p">,</span> <span class="s1">'.coffee'</span><span class="p">],</span>
   <span class="nx">modules</span><span class="p">:</span> <span class="p">[</span>
     <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="s1">'app/javascript'</span><span class="p">),</span>
@@ -68,48 +68,48 @@
 <span class="p">}</span>
 
 <span class="p">...</span>
-</code></pre>
+</code></pre></div>
 <p>Rewrite your components to include proper <code>import</code> and <code>export</code> declarations:</p>
-<pre class="highlight diff"><code><span class="gi">+import React from 'react'
+<div class="highlight"><pre class="highlight diff"><code><span class="gi">+import React from 'react'
 </span>class TextField extends React.Component {
   // your component code
 }
 <span class="gi">+export default TextField;
-</span></code></pre>
+</span></code></pre></div>
 <p>Keep in mind that you will have to <code>import</code> child components that you&rsquo;re using in any given component.</p>
 
 <p>If you&rsquo;re using the <a href="https://facebook.github.io/react/docs/update.html">immutability helpers</a> anywhere, be sure to add:</p>
-<pre class="highlight diff"><code><span class="gi">+import update from 'react-addons-update'
-</span></code></pre>
+<div class="highlight"><pre class="highlight diff"><code><span class="gi">+import update from 'react-addons-update'
+</span></code></pre></div>
 <p>I would recommend reading <a href="https://github.com/rails/webpacker">Webpacker&rsquo;s README</a> at this point to familiarize yourself with the notion of packs and how to include them in Rails. You will have to add a line to include the appropriate root component in your layout view:</p>
-<pre class="highlight diff"><code>&lt;%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %&gt;
+<div class="highlight"><pre class="highlight diff"><code>&lt;%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %&gt;
 &lt;%= javascript_include_tag 'vendor', 'data-turbolinks-track': 'reload' %&gt;
 &lt;%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %&gt;
 <span class="gi">+&lt;%= javascript_pack_tag 'my_pack' %&gt;
-</span></code></pre>
+</span></code></pre></div>
 <p>This is what my pack file looks like:</p>
-<pre class="highlight javascript"><code><span class="kr">import</span> <span class="nx">RootComponent</span> <span class="nx">from</span> <span class="s1">'components/test/root_component'</span><span class="p">;</span>
-<span class="kr">import</span> <span class="nx">WebpackerReact</span> <span class="nx">from</span> <span class="s1">'webpacker-react'</span><span class="p">;</span>
+<div class="highlight"><pre class="highlight javascript"><code><span class="k">import</span> <span class="nx">RootComponent</span> <span class="k">from</span> <span class="s1">'components/test/root_component'</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">WebpackerReact</span> <span class="k">from</span> <span class="s1">'webpacker-react'</span><span class="p">;</span>
 
 <span class="nx">WebpackerReact</span><span class="p">.</span><span class="nx">setup</span><span class="p">({</span><span class="nx">RootComponent</span><span class="p">});</span>
-</code></pre>
+</code></pre></div>
 <p>Using <a href="https://github.com/renchap/webpacker-react">Webpacker::React</a> allows me to still have a <code>react_component</code> view helper, although there&rsquo;s no support for pre-rendering yet. At some point I may just move to using the regular DOM mounting and skip this helper altogether.</p>
 
 <h3>Production</h3>
 
 <p>Install <a href="https://yarnpkg.com/en/">Yarn</a>:</p>
-<pre class="highlight plaintext"><code>curl https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
+<div class="highlight"><pre class="highlight plaintext"><code>curl https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo
 yum install -y yarn
-</code></pre>
+</code></pre></div>
 <p>I also had to add this at the top of my <code>config/webpack/shared.js</code>:</p>
-<pre class="highlight javascript"><code><span class="s1">'use strict'</span><span class="p">;</span>
-</code></pre>
+<div class="highlight"><pre class="highlight javascript"><code><span class="s1">'use strict'</span><span class="p">;</span>
+</code></pre></div>
 <p>Install your packages:</p>
-<pre class="highlight plaintext"><code>yarn install --production
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>yarn install --production
+</code></pre></div>
 <p>Compile your packs (this will generate files with digests):</p>
-<pre class="highlight plaintext"><code>RAILS_ENV=production rails webpacker:compile
-</code></pre>
+<div class="highlight"><pre class="highlight plaintext"><code>RAILS_ENV=production rails webpacker:compile
+</code></pre></div>
 <h3>Update (April 29, 2017)</h3>
 
 <p>this was written before <strong>react-rails</strong> added <a href="https://github.com/reactjs/react-rails#use-with-webpacker">support for Webpacker</a>. You can decide to use this process to rely on Webpacker to handle everything but still keep <strong>react-rails</strong> for its <code>react_component</code> view helper, saving you the need to use Webpacker::React.</p>
